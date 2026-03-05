@@ -1,0 +1,225 @@
+﻿using System;
+using System.Globalization;
+using System.IO;
+using System.Windows.Forms;
+
+namespace Review_Q2
+{
+    public partial class Form1 : Form
+    {
+        // rates
+        private const decimal RATE_CHANGE_OIL = 780m;
+        private const decimal RATE_LUBRICATION = 540m;
+        private const decimal RATE_RADIATOR_FLUSH = 900m;
+        private const decimal RATE_TRANSMISSION_FLUSH = 2400m;
+        private const decimal RATE_INSPECTION = 450m;
+        private const decimal RATE_REPLACE_MUFFLER = 3000m;
+        private const decimal RATE_WHEEL_ALIGNMENT = 600m;
+        private const decimal LABOR_RATE_PER_HOUR = 600m;
+        private const decimal PARTS_TAX_RATE = 0.06m;
+
+        private readonly CultureInfo taiwan = CultureInfo.GetCultureInfo("zh-TW");
+
+        public Form1()
+        {
+            InitializeComponent();
+
+            // wire up events
+            btnCalculate.Click += calculateButton_Click;
+            btnClear.Click += clearButton_Click;
+            btnExit.Click += exitButton_Click;
+        }
+
+        // Calculation methods
+        private decimal OilLubeCharges()
+        {
+            decimal total = 0m;
+            if (chkChangeOil.Checked) total += RATE_CHANGE_OIL;
+            if (chkLubrication.Checked) total += RATE_LUBRICATION;
+            return total;
+        }
+
+        private decimal FlushCharges()
+        {
+            decimal total = 0m;
+            if (chkRadiatorFlush.Checked) total += RATE_RADIATOR_FLUSH;
+            if (chkTransmissionFlush.Checked) total += RATE_TRANSMISSION_FLUSH;
+            return total;
+        }
+
+        private decimal MiscCharges()
+        {
+            decimal total = 0m;
+            if (chkInspection.Checked) total += RATE_INSPECTION;
+            if (chkReplaceMuffler.Checked) total += RATE_REPLACE_MUFFLER;
+            if (chkWheelAlignment.Checked) total += RATE_WHEEL_ALIGNMENT;
+            return total;
+        }
+
+        private decimal OtherCharges(out decimal partsCost, out decimal laborCost)
+        {
+            partsCost = 0m;
+            laborCost = 0m;
+
+            if (!string.IsNullOrWhiteSpace(txtParts.Text))
+            {
+                if (!decimal.TryParse(txtParts.Text, NumberStyles.Number, CultureInfo.InvariantCulture, out partsCost) &&
+                    !decimal.TryParse(txtParts.Text, NumberStyles.Currency, taiwan, out partsCost))
+                {
+                    MessageBox.Show("請輸入有效的零件費用（數字）。", "輸入錯誤", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    partsCost = 0m;
+                }
+            }
+
+            if (!string.IsNullOrWhiteSpace(txtLaborHours.Text))
+            {
+                if (!decimal.TryParse(txtLaborHours.Text, NumberStyles.Number, CultureInfo.InvariantCulture, out decimal hours) &&
+                    !decimal.TryParse(txtLaborHours.Text, NumberStyles.Number, taiwan, out hours))
+                {
+                    MessageBox.Show("請輸入有效的工時（數字）。", "輸入錯誤", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    hours = 0m;
+                }
+                laborCost = Math.Max(0m, hours) * LABOR_RATE_PER_HOUR;
+            }
+
+            return partsCost + laborCost;
+        }
+
+        private decimal TaxCharges(decimal partsCost)
+        {
+            return Math.Round(partsCost * PARTS_TAX_RATE, 2);
+        }
+
+        private decimal TotalCharges(decimal serviceAndLabor, decimal partsCost, decimal tax)
+        {
+            return serviceAndLabor + partsCost + tax;
+        }
+
+        // Event handlers
+        private void calculateButton_Click(object? sender, EventArgs e)
+        {
+            // compute
+            decimal oil = OilLubeCharges();
+            decimal flush = FlushCharges();
+            decimal misc = MiscCharges();
+            decimal serviceCharges = oil + flush + misc;
+
+            decimal partsCost, laborCost;
+            decimal other = OtherCharges(out partsCost, out laborCost);
+
+            decimal serviceAndLabor = serviceCharges + laborCost;
+            decimal tax = TaxCharges(partsCost);
+            decimal total = TotalCharges(serviceAndLabor, partsCost, tax);
+
+            // display results formatted as currency (NT$)
+            txtServiceLaborCost.Text = serviceAndLabor.ToString("C0", taiwan);
+            txtPartsCost.Text = partsCost.ToString("C0", taiwan);
+            txtPartsTax.Text = tax.ToString("C0", taiwan);
+            txtTotalCost.Text = total.ToString("C0", taiwan);
+        }
+
+        private void clearButton_Click(object? sender, EventArgs e)
+        {
+            ClearOilLube();
+            ClearFlushes();
+            ClearMisc();
+            ClearOther();
+            ClearFees();
+        }
+
+        private void exitButton_Click(object? sender, EventArgs e)
+        {
+            var result = MessageBox.Show("是否要儲存維修明細？", "儲存", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+            if (result == DialogResult.Cancel) return;
+            if (result == DialogResult.Yes)
+            {
+                SaveServiceDetailsToFile();
+            }
+            Close();
+        }
+
+        // Clear methods
+        private void ClearOilLube()
+        {
+            chkChangeOil.Checked = false;
+            chkLubrication.Checked = false;
+        }
+
+        private void ClearFlushes()
+        {
+            chkRadiatorFlush.Checked = false;
+            chkTransmissionFlush.Checked = false;
+        }
+
+        private void ClearMisc()
+        {
+            chkInspection.Checked = false;
+            chkReplaceMuffler.Checked = false;
+            chkWheelAlignment.Checked = false;
+        }
+
+        private void ClearOther()
+        {
+            txtParts.Text = string.Empty;
+            txtLaborHours.Text = string.Empty;
+        }
+
+        private void ClearFees()
+        {
+            txtServiceLaborCost.Text = string.Empty;
+            txtPartsCost.Text = string.Empty;
+            txtPartsTax.Text = string.Empty;
+            txtTotalCost.Text = string.Empty;
+        }
+
+        // File save
+        private void SaveServiceDetailsToFile()
+        {
+            try
+            {
+                using SaveFileDialog dlg = new SaveFileDialog();
+                dlg.Filter = "Text Files|*.txt|All Files|*.*";
+                dlg.FileName = $"ServiceDetails_{DateTime.Now:yyyyMMdd_HHmmss}.txt";
+                if (dlg.ShowDialog() != DialogResult.OK) return;
+
+                decimal oil = OilLubeCharges();
+                decimal flush = FlushCharges();
+                decimal misc = MiscCharges();
+                decimal serviceCharges = oil + flush + misc;
+
+                decimal partsCost, laborCost;
+                OtherCharges(out partsCost, out laborCost);
+                decimal serviceAndLabor = serviceCharges + laborCost;
+                decimal tax = TaxCharges(partsCost);
+                decimal total = TotalCharges(serviceAndLabor, partsCost, tax);
+
+                using StreamWriter sw = new StreamWriter(dlg.FileName, false);
+                sw.WriteLine("汽車維修服務明細");
+                sw.WriteLine($"建立時間: {DateTime.Now:G}");
+                sw.WriteLine(new string('-', 40));
+                sw.WriteLine("已選擇服務:");
+                if (chkChangeOil.Checked) sw.WriteLine($" - 更換機油: {RATE_CHANGE_OIL.ToString("C0", taiwan)}");
+                if (chkLubrication.Checked) sw.WriteLine($" - 潤滑保養: {RATE_LUBRICATION.ToString("C0", taiwan)}");
+                if (chkRadiatorFlush.Checked) sw.WriteLine($" - 水箱清洗: {RATE_RADIATOR_FLUSH.ToString("C0", taiwan)}");
+                if (chkTransmissionFlush.Checked) sw.WriteLine($" - 變速箱清洗: {RATE_TRANSMISSION_FLUSH.ToString("C0", taiwan)}");
+                if (chkInspection.Checked) sw.WriteLine($" - 檢驗: {RATE_INSPECTION.ToString("C0", taiwan)}");
+                if (chkReplaceMuffler.Checked) sw.WriteLine($" - 更換消音器: {RATE_REPLACE_MUFFLER.ToString("C0", taiwan)}");
+                if (chkWheelAlignment.Checked) sw.WriteLine($" - 輪胎定位: {RATE_WHEEL_ALIGNMENT.ToString("C0", taiwan)}");
+                sw.WriteLine(new string('-', 40));
+                sw.WriteLine($"工時費用: {laborCost.ToString("C0", taiwan)}");
+                sw.WriteLine($"零件費用: {partsCost.ToString("C0", taiwan)}");
+                sw.WriteLine($"稅金 (零件 6%): {tax.ToString("C0", taiwan)}");
+                sw.WriteLine(new string('-', 40));
+                sw.WriteLine($"服務與工資總額: {serviceAndLabor.ToString("C0", taiwan)}");
+                sw.WriteLine($"總費用: {total.ToString("C0", taiwan)}");
+                sw.Flush();
+
+                MessageBox.Show("已儲存維修明細。", "儲存完成", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"儲存檔案時發生錯誤: {ex.Message}", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+    }
+}
