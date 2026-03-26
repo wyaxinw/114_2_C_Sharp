@@ -1,0 +1,59 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.IO;
+
+namespace Test_Score_List
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        
+
+       
+
+        private void getScoresButton_Click(object sender, EventArgs e)
+        {
+            double averageScore;    // 用來儲存平均分數
+            int numAboveAverage;    // 高於平均分數的數量
+            int numBelowAverage;    // 低於平均分數的數量
+
+            // 建立 List 來儲存分數
+            List<int> scoresList = new List<int>();
+
+            // 從檔案讀取分數並加入 List
+            ReadScores(scoresList);
+
+            // 顯示分數清單
+            DisplayScores(scoresList);
+
+            // 顯示平均分數
+            averageScore = Average(scoresList);
+            averageLabel.Text = averageScore.ToString("n1");
+
+            // 顯示高於平均的成績數量
+            numAboveAverage = AboveAverage(scoresList, averageScore);
+            aboveAverageLabel.Text = numAboveAverage.ToString();
+
+            // 顯示低於平均的成績數量
+            numBelowAverage = BelowAverage(scoresList);
+            belowAverageLabel.Text = numBelowAverage.ToString();
+        }
+
+        private void exitButton_Click(object sender, EventArgs e)
+        {
+            // 關閉表單
+            this.Close();
+        }
+    }
+}

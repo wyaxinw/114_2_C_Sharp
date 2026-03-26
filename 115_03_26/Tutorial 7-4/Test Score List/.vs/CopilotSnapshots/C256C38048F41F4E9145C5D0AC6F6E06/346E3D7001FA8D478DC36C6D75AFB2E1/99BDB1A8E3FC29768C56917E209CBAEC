@@ -1,0 +1,93 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.IO;
+
+namespace Test_Score_List
+{
+    public partial class Form1 : Form
+    {
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        
+
+       
+
+        private void getScoresButton_Click(object sender, EventArgs e)
+        {
+            double averageScore;    // 用來儲存平均分數
+            int numAboveAverage;    // 高於平均分數的數量
+            int numBelowAverage;    // 低於平均分數的數量
+
+            // 建立 List 來儲存分數
+            List<int> scoresList = new List<int>();
+
+            // 從檔案讀取分數並加入 List
+            ReadScores(scoresList);
+
+            // 顯示分數清單
+            DisplayScores(scoresList);
+
+            // 顯示平均分數
+            averageScore = Average(scoresList);
+            averageLabel.Text = averageScore.ToString("n1");
+
+            // 顯示高於平均的成績數量
+            numAboveAverage = AboveAverage(scoresList, averageScore);
+            aboveAverageLabel.Text = numAboveAverage.ToString();
+
+            // 顯示低於平均的成績數量
+            numBelowAverage = BelowAverage(scoresList);
+            belowAverageLabel.Text = numBelowAverage.ToString();
+        }
+
+        private void exitButton_Click(object sender, EventArgs e)
+        {
+            // 關閉表單
+            this.Close();
+        }
+
+        // 搜尋按鈕事件處理
+        // 使用者在 searchTextBox 輸入欲搜尋的分數，按下「搜尋」後會在 testScoresListBox 中搜尋
+        // 若找到，於 searchResultLabel 顯示所在位置（以 1 為起始）；若找不到則顯示「分數不存在」
+        private void searchButton_Click(object sender, EventArgs e)
+        {
+            // 取得並嘗試解析使用者輸入的分數
+            string input = searchTextBox.Text.Trim();
+            int targetScore;
+            if (!int.TryParse(input, out targetScore))
+            {
+                // 無法解析為整數則視為搜尋失敗
+                searchResultLabel.Text = "分數不存在";
+                return;
+            }
+
+            // 在 ListBox 中逐項比對（ListBox 內容預期為分數的文字表示）
+            for (int i = 0; i < testScoresListBox.Items.Count; i++)
+            {
+                int itemScore;
+                if (int.TryParse(testScoresListBox.Items[i].ToString(), out itemScore))
+                {
+                    if (itemScore == targetScore)
+                    {
+                        // 找到時顯示位置（以 1 為起始）
+                        searchResultLabel.Text = (i + 1).ToString();
+                        return;
+                    }
+                }
+            }
+
+            // 若整個清單都沒有找到，顯示「分數不存在」
+            searchResultLabel.Text = "分數不存在";
+        }
+    }
+}
