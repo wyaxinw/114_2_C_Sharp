@@ -1,0 +1,207 @@
+﻿namespace Test_Score_List
+{
+    partial class Form1
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.testScoresListBox = new System.Windows.Forms.ListBox();
+            this.searchLabel = new System.Windows.Forms.Label();
+            this.searchTextBox = new System.Windows.Forms.TextBox();
+            this.searchButton = new System.Windows.Forms.Button();
+            this.avgScoreDescriptionLabel = new System.Windows.Forms.Label();
+            this.aboveAvgDescriptionLabel = new System.Windows.Forms.Label();
+            this.belowAvgDescriptionLabel = new System.Windows.Forms.Label();
+            this.averageLabel = new System.Windows.Forms.Label();
+            this.aboveAverageLabel = new System.Windows.Forms.Label();
+            this.belowAverageLabel = new System.Windows.Forms.Label();
+            this.getScoresButton = new System.Windows.Forms.Button();
+            this.exitButton = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // testScoresListBox
+            // 
+            this.testScoresListBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.testScoresListBox.FormattingEnabled = true;
+            this.testScoresListBox.ItemHeight = 40;
+            this.testScoresListBox.Location = new System.Drawing.Point(12, 51);
+            this.testScoresListBox.Name = "testScoresListBox";
+            this.testScoresListBox.Size = new System.Drawing.Size(435, 284);
+            this.testScoresListBox.TabIndex = 0;
+            // 
+            // searchLabel
+            // 
+            this.searchLabel.AutoSize = true;
+            this.searchLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.searchLabel.Location = new System.Drawing.Point(12, 12);
+            this.searchLabel.Name = "searchLabel";
+            this.searchLabel.Size = new System.Drawing.Size(146, 29);
+            this.searchLabel.TabIndex = 9;
+            this.searchLabel.Text = "搜尋（學號或分數）：";
+            // 
+            // searchTextBox
+            // 
+            this.searchTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.searchTextBox.Location = new System.Drawing.Point(200, 12);
+            this.searchTextBox.Name = "searchTextBox";
+            this.searchTextBox.Size = new System.Drawing.Size(360, 35);
+            this.searchTextBox.TabIndex = 10;
+            // 
+            // searchButton
+            // 
+            this.searchButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.searchButton.Location = new System.Drawing.Point(580, 12);
+            this.searchButton.Name = "searchButton";
+            this.searchButton.Size = new System.Drawing.Size(150, 40);
+            this.searchButton.TabIndex = 11;
+            this.searchButton.Text = "搜尋";
+            this.searchButton.UseVisualStyleBackColor = true;
+            this.searchButton.Click += new System.EventHandler(this.searchButton_Click);
+            // 
+            // avgScoreDescriptionLabel
+            // 
+            this.avgScoreDescriptionLabel.AutoSize = true;
+            this.avgScoreDescriptionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.avgScoreDescriptionLabel.Location = new System.Drawing.Point(485, 51);
+            this.avgScoreDescriptionLabel.Name = "avgScoreDescriptionLabel";
+            this.avgScoreDescriptionLabel.Size = new System.Drawing.Size(197, 40);
+            this.avgScoreDescriptionLabel.TabIndex = 1;
+            this.avgScoreDescriptionLabel.Text = "平均分數：";
+            // 
+            // aboveAvgDescriptionLabel
+            // 
+            this.aboveAvgDescriptionLabel.AutoSize = true;
+            this.aboveAvgDescriptionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.aboveAvgDescriptionLabel.Location = new System.Drawing.Point(485, 165);
+            this.aboveAvgDescriptionLabel.Name = "aboveAvgDescriptionLabel";
+            this.aboveAvgDescriptionLabel.Size = new System.Drawing.Size(341, 40);
+            this.aboveAvgDescriptionLabel.TabIndex = 2;
+            this.aboveAvgDescriptionLabel.Text = "高於平均分數人數：";
+            // 
+            // belowAvgDescriptionLabel
+            // 
+            this.belowAvgDescriptionLabel.AutoSize = true;
+            this.belowAvgDescriptionLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.belowAvgDescriptionLabel.Location = new System.Drawing.Point(485, 295);
+            this.belowAvgDescriptionLabel.Name = "belowAvgDescriptionLabel";
+            this.belowAvgDescriptionLabel.Size = new System.Drawing.Size(341, 40);
+            this.belowAvgDescriptionLabel.TabIndex = 3;
+            this.belowAvgDescriptionLabel.Text = "低於平均分數人數：";
+            // 
+            // averageLabel
+            // 
+            this.averageLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.averageLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.averageLabel.Location = new System.Drawing.Point(814, 51);
+            this.averageLabel.Name = "averageLabel";
+            this.averageLabel.Size = new System.Drawing.Size(160, 40);
+            this.averageLabel.TabIndex = 4;
+            this.averageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // aboveAverageLabel
+            // 
+            this.aboveAverageLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.aboveAverageLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.aboveAverageLabel.Location = new System.Drawing.Point(814, 165);
+            this.aboveAverageLabel.Name = "aboveAverageLabel";
+            this.aboveAverageLabel.Size = new System.Drawing.Size(160, 40);
+            this.aboveAverageLabel.TabIndex = 5;
+            this.aboveAverageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // belowAverageLabel
+            // 
+            this.belowAverageLabel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.belowAverageLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.belowAverageLabel.Location = new System.Drawing.Point(814, 295);
+            this.belowAverageLabel.Name = "belowAverageLabel";
+            this.belowAverageLabel.Size = new System.Drawing.Size(160, 40);
+            this.belowAverageLabel.TabIndex = 6;
+            this.belowAverageLabel.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // getScoresButton
+            // 
+            this.getScoresButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.getScoresButton.Location = new System.Drawing.Point(148, 413);
+            this.getScoresButton.Name = "getScoresButton";
+            this.getScoresButton.Size = new System.Drawing.Size(250, 59);
+            this.getScoresButton.TabIndex = 7;
+            this.getScoresButton.Text = "讀取分數";
+            this.getScoresButton.UseVisualStyleBackColor = true;
+            this.getScoresButton.Click += new System.EventHandler(this.getScoresButton_Click);
+            // 
+            // exitButton
+            // 
+            this.exitButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.exitButton.Location = new System.Drawing.Point(520, 413);
+            this.exitButton.Name = "exitButton";
+            this.exitButton.Size = new System.Drawing.Size(177, 59);
+            this.exitButton.TabIndex = 8;
+            this.exitButton.Text = "離開";
+            this.exitButton.UseVisualStyleBackColor = true;
+            this.exitButton.Click += new System.EventHandler(this.exitButton_Click);
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(21F, 40F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(1049, 525);
+            this.Controls.Add(this.exitButton);
+            this.Controls.Add(this.getScoresButton);
+            this.Controls.Add(this.belowAverageLabel);
+            this.Controls.Add(this.aboveAverageLabel);
+            this.Controls.Add(this.averageLabel);
+            this.Controls.Add(this.belowAvgDescriptionLabel);
+            this.Controls.Add(this.searchButton);
+            this.Controls.Add(this.searchTextBox);
+            this.Controls.Add(this.searchLabel);
+            this.Controls.Add(this.aboveAvgDescriptionLabel);
+            this.Controls.Add(this.avgScoreDescriptionLabel);
+            this.Controls.Add(this.testScoresListBox);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Name = "Form1";
+            this.Text = "測驗成績清單";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.ListBox testScoresListBox;
+        private System.Windows.Forms.Label searchLabel;
+        private System.Windows.Forms.TextBox searchTextBox;
+        private System.Windows.Forms.Button searchButton;
+        private System.Windows.Forms.Label avgScoreDescriptionLabel;
+        private System.Windows.Forms.Label aboveAvgDescriptionLabel;
+        private System.Windows.Forms.Label belowAvgDescriptionLabel;
+        private System.Windows.Forms.Label averageLabel;
+        private System.Windows.Forms.Label aboveAverageLabel;
+        private System.Windows.Forms.Label belowAverageLabel;
+        private System.Windows.Forms.Button getScoresButton;
+        private System.Windows.Forms.Button exitButton;
+    }
+}
+
