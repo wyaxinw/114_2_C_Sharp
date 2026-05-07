@@ -1,0 +1,70 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.IO;
+
+namespace WindowsFormsApp1
+{
+    public partial class Form1 : Form
+    {
+        // absolute path to the image on the user's desktop (set directly as requested)
+        private readonly string ImageAbsolutePath = @"C:\Users\m303\Desktop\螢幕擷取畫面 2026-05-07 135509.png";
+
+        public Form1()
+        {
+            InitializeComponent();
+            LoadImageAsExactFormBackground();
+        }
+
+        private void LoadImageAsExactFormBackground()
+        {
+            try
+            {
+                var candidate = ImageAbsolutePath;
+
+                if (!File.Exists(candidate))
+                {
+                    return;
+                }
+
+                using (var fs = File.Open(candidate, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (var img = Image.FromStream(fs))
+                {
+                    // create a copy so the original file is not locked
+                    var bg = new Bitmap(img);
+
+                    // Dispose previous background if any
+                    if (this.BackgroundImage != null)
+                    {
+                        var prev = this.BackgroundImage;
+                        this.BackgroundImage = null;
+                        prev.Dispose();
+                    }
+
+                    // Remove existing controls so the form displays only the image
+                    this.Controls.Clear();
+
+                    // Set exact client size to the image size and assign background
+                    this.ClientSize = new Size(bg.Width, bg.Height);
+                    this.BackgroundImage = bg;
+                    this.BackgroundImageLayout = ImageLayout.None;
+
+                    // Optional: make window non-resizable to keep exact appearance
+                    this.FormBorderStyle = FormBorderStyle.FixedSingle;
+                    this.MaximizeBox = false;
+                    this.StartPosition = FormStartPosition.CenterScreen;
+                }
+            }
+            catch
+            {
+                // ignore errors to keep form usable
+            }
+        }
+    }
+}

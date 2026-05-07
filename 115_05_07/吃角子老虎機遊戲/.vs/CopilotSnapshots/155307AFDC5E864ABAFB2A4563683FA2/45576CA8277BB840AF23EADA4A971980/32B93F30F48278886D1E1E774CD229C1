@@ -1,0 +1,62 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.IO;
+
+namespace WindowsFormsApp1
+{
+    public partial class Form1 : Form
+    {
+        // relative path from the output folder to the image file
+        private readonly string ImageRelativePath = Path.Combine("..", "..", "螢幕擷取畫面 2026-05-07 135509.png");
+
+        public Form1()
+        {
+            InitializeComponent();
+            LoadImagesAtStartup();
+        }
+
+        private void LoadImagesAtStartup()
+        {
+            try
+            {
+                var exeFolder = Application.StartupPath; // bin\Debug or bin\Release
+                var candidate = Path.GetFullPath(Path.Combine(exeFolder, ImageRelativePath));
+
+                if (!File.Exists(candidate))
+                {
+                    // no file found, nothing to do
+                    return;
+                }
+
+                // Load into memory and create independent Bitmaps to avoid locking the file
+                using (var fs = File.Open(candidate, FileMode.Open, FileAccess.Read, FileShare.Read))
+                using (var img = Image.FromStream(fs))
+                {
+                    // create separate copies for each PictureBox
+                    var bmp1 = new Bitmap(img);
+                    var bmp2 = new Bitmap(img);
+                    var bmp3 = new Bitmap(img);
+
+                    pictureBox1.Image = bmp1;
+                    pictureBox2.Image = bmp2;
+                    pictureBox3.Image = bmp3;
+
+                    pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+                    pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
+                    pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+                }
+            }
+            catch
+            {
+                // ignore errors on load to keep form usable
+            }
+        }
+    }
+}

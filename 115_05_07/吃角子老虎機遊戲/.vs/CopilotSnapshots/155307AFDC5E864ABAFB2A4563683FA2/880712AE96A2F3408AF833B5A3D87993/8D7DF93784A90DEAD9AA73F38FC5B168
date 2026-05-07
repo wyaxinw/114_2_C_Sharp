@@ -1,0 +1,278 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.IO;
+
+namespace WindowsFormsApp1
+{
+    public partial class Form1 : Form
+    {
+        private readonly string[] FruitFiles = new[]
+        {
+            "Apple.bmp",
+            "Banana.bmp",
+            "Cherries.bmp",
+            "Grapes.bmp",
+            "Lemon.bmp",
+            "Lime.bmp",
+            "Orange.bmp",
+            "Pear.bmp",
+            "Strawberry.bmp",
+            "Watermelon.bmp"
+        };
+
+        // start with a small default balance so first spin can be tested without manual deposit
+        private decimal balance = 100m;
+        private int totalSpins = 0;
+        private int winCount = 0;
+        private Random rng = new Random();
+
+        public Form1()
+        {
+            InitializeComponent();
+
+            // initialize UI from components rather than replacing the form background
+            LoadAssetsIntoImageList();
+            InitializeControls();
+            WireEvents();
+            UpdateUi();
+        }
+
+        private void LoadAssetsIntoImageList()
+        {
+            try
+            {
+                // try several common locations to find the fruit image files
+                var candidateDirs = new List<string>
+                {
+                    Environment.GetFolderPath(Environment.SpecialFolder.Desktop),
+                    AppDomain.CurrentDomain.BaseDirectory,
+                    Environment.CurrentDirectory
+                };
+
+                // also try a few parent folders of the base directory (useful when running from bin) 
+                try
+                {
+                    var baseDir = AppDomain.CurrentDomain.BaseDirectory;
+                    var p1 = Path.GetFullPath(Path.Combine(baseDir, "..", "..", ".."));
+                    candidateDirs.Add(p1);
+                }
+                catch { }
+
+                foreach (var file in FruitFiles)
+                {
+                    string found = null;
+                    foreach (var dir in candidateDirs)
+                    {
+                        if (string.IsNullOrWhiteSpace(dir))
+                            continue;
+                        var path = Path.Combine(dir, file);
+                        if (File.Exists(path))
+                        {
+                            found = path;
+                            break;
+                        }
+                    }
+
+                    // if not found yet, try a recursive search from base dir (safe-guarded)
+                    if (found == null)
+                    {
+                        try
+                        {
+                            var baseSearch = AppDomain.CurrentDomain.BaseDirectory;
+                            var matches = Directory.EnumerateFiles(baseSearch, file, SearchOption.AllDirectories).FirstOrDefault();
+                            if (!string.IsNullOrEmpty(matches))
+                                found = matches;
+                        }
+                        catch { }
+                    }
+
+                    if (found == null)
+                        continue;
+
+                    try
+                    {
+                        using (var fs = File.Open(found, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        using (var img = Image.FromStream(fs))
+                        {
+                            // add a copy to the image list
+                            var bmp = new Bitmap(img);
+                            this.imageList1.Images.Add(bmp);
+                        }
+                    }
+                    catch
+                    {
+                        // ignore individual load failures
+                    }
+                }
+
+                // if imageList is empty after search, create simple placeholder images
+                // ensure picture boxes use zoom mode
+                pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
+                pictureBox2.SizeMode = PictureBoxSizeMode.Zoom;
+                pictureBox3.SizeMode = PictureBoxSizeMode.Zoom;
+
+                if (this.imageList1.Images.Count == 0)
+                {
+                    // generate simple placeholders so spins still work
+                    var colors = new Color[] {
+                        Color.Red, Color.Orange, Color.Yellow, Color.Green, Color.Lime,
+                        Color.Blue, Color.Purple, Color.Brown, Color.Pink, Color.Magenta
+                    };
+
+                    for (int i = 0; i < FruitFiles.Length; i++)
+                    {
+                        var bmp = new Bitmap(this.imageList1.ImageSize.Width, this.imageList1.ImageSize.Height);
+                        using (var g = Graphics.FromImage(bmp))
+                        {
+                            g.Clear(colors[i % colors.Length]);
+                            var name = Path.GetFileNameWithoutExtension(FruitFiles[i]);
+                            var f = new Font("Arial", 12, FontStyle.Bold);
+                            var sz = g.MeasureString(name, f);
+                            g.DrawString(name, f, Brushes.White, (bmp.Width - sz.Width) / 2f, (bmp.Height - sz.Height) / 2f);
+                        }
+                        this.imageList1.Images.Add(bmp);
+                    }
+                }
+            }
+            catch
+            {
+                // ignore image load errors
+            }
+        }
+
+        private void InitializeControls()
+        {
+            // populate bet options if none
+            if (comboBox_bet.Items.Count == 0)
+            {
+                comboBox_bet.Items.Add("10");
+                comboBox_bet.Items.Add("20");
+                comboBox_bet.Items.Add("50");
+                comboBox_bet.Items.Add("100");
+                comboBox_bet.SelectedIndex = 0;
+            }
+
+            // set initial stats text
+            label_totalSpins.Text = "累計旋轉次數：0";
+            label_winCount.Text = "累計中獎次數：0";
+            label_winRate.Text = "累計勝率：0%";
+            label_balance.Text = "餘額 : NT$0.00";
+            label_lastWin.Text = "本次獲得 : NT$0.00";
+
+            // clear any accidental designer click handler effect
+            // (do not close on clicking the label)
+            try
+            {
+                label_depositPrompt.Click -= label_depositPrompt_Click;
+            }
+            catch { }
+        }
+
+        private void WireEvents()
+        {
+            this.button_deposit.Click += Button_deposit_Click;
+            this.button1.Click += Button1_Click; // 旋轉
+            this.button2.Click += Button2_Click; // 離開
+        }
+
+        private void Button_deposit_Click(object sender, EventArgs e)
+        {
+            int val;
+            if (int.TryParse(textBox_deposit.Text.Trim(), out val) && val > 0)
+            {
+                balance += val;
+                UpdateUi();
+                textBox_deposit.Clear();
+            }
+            else
+            {
+                MessageBox.Show("請輸入正整數的存入金額", "輸入錯誤", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void Button1_Click(object sender, EventArgs e)
+        {
+            // Spin
+            if (imageList1.Images.Count == 0)
+            {
+                MessageBox.Show("尚未載入任何圖示，無法旋轉。", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            int bet;
+            if (!int.TryParse(comboBox_bet.SelectedItem?.ToString() ?? "0", out bet) || bet <= 0)
+            {
+                MessageBox.Show("請選擇有效的下注金額。", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (balance < bet)
+            {
+                MessageBox.Show("餘額不足，請先存入。", "餘額不足", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            balance -= bet;
+
+            // pick three random indices
+            int max = imageList1.Images.Count;
+            int i1 = rng.Next(max);
+            int i2 = rng.Next(max);
+            int i3 = rng.Next(max);
+
+            // assign images (create copies so they can be disposed independently)
+            pictureBox1.Image = new Bitmap(imageList1.Images[i1]);
+            pictureBox2.Image = new Bitmap(imageList1.Images[i2]);
+            pictureBox3.Image = new Bitmap(imageList1.Images[i3]);
+
+            totalSpins++;
+
+            decimal winAmount = 0m;
+            // simple payout: three of a kind = bet * 10, two of a kind = bet * 2
+            if (i1 == i2 && i2 == i3)
+            {
+                winAmount = bet * 10;
+            }
+            else if (i1 == i2 || i1 == i3 || i2 == i3)
+            {
+                winAmount = bet * 2;
+            }
+
+            if (winAmount > 0)
+            {
+                balance += winAmount;
+                winCount++;
+            }
+
+            label_lastWin.Text = $"本次獲得 : NT${winAmount:0}";
+            UpdateUi();
+        }
+
+        private void Button2_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void UpdateUi()
+        {
+            label_balance.Text = $"餘額 : NT${balance:0.00}";
+            label_totalSpins.Text = $"累計旋轉次數：{totalSpins}";
+            label_winCount.Text = $"累計中獎次數：{winCount}";
+            var rate = totalSpins > 0 ? (double)winCount / totalSpins * 100.0 : 0.0;
+            label_winRate.Text = $"累計勝率：{rate:0.##}%";
+        }
+
+        // keep but make inert
+        private void label_depositPrompt_Click(object sender, EventArgs e)
+        {
+            // noop
+        }
+    }
+}
