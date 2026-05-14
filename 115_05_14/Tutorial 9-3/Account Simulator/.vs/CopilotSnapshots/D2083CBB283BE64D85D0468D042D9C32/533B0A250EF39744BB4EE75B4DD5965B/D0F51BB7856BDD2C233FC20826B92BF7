@@ -1,0 +1,55 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Account_Simulator
+{
+    class BankAccount
+    {
+        // 使用 decimal 型別來儲存金額，避免浮點數運算造成的誤差。
+        private decimal balance;
+
+        // 建構子：設定帳戶的起始餘額。
+        // 參數：
+        //   initialBalance - 帳戶初始金額（以 decimal 表示）。
+        // 備註：呼叫端可在建立前驗證初始金額是否有效（例如非負數）。
+        public BankAccount(decimal initialBalance)
+        {
+            balance = initialBalance;
+        }
+
+        // 存款方法：將指定金額加入帳戶餘額。
+        // 參數：
+        //   amount - 要存入的金額（decimal）。
+        // 注意：此方法不會在內部驗證金額是否為正值，建議呼叫端先執行必要的檢查。
+        public decimal balance
+        {
+            get { return balance; }
+        }
+
+        // 提款方法：從帳戶餘額中扣除指定金額。
+        // 參數：
+        //   amount - 要提領的金額（decimal）。
+        // 注意：此方法不會在內部阻止餘額變為負值，若需避免透支（negative balance），
+        // 請在呼叫此方法前先檢查 GetBalance() 是否足夠或在此方法中加入額外檢查。
+        public void Deposit(decimal amount)
+        {
+            if (amount > 0 )
+            {
+                balance += amount;
+            }
+            else
+            {
+                MessageBox.Show("存款金額必須為正數。");
+            }
+            else
+            {
+                MessageBox.Show("存款金額必須為正數。");
+            }
+        }
+        
+    }
+}
