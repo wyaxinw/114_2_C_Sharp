@@ -7,15 +7,15 @@
       "RelativeMoniker": "D:0:0:{51CFAA8A-D9F4-4766-B15D-EF7A731B8D17}|MutiFormVariable\\MutiFormVariable.csproj|solutionrelative:mutiformvariable\\secondform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{51CFAA8A-D9F4-4766-B15D-EF7A731B8D17}|MutiFormVariable\\MutiFormVariable.csproj|c:\\users\\m303\\desktop\\114_2_c_sharp\\115_05_28\\mutiformvariable\\mutiformvariable\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{51CFAA8A-D9F4-4766-B15D-EF7A731B8D17}|MutiFormVariable\\MutiFormVariable.csproj|C:\\Users\\m303\\Desktop\\114_2_C_Sharp\\115_05_28\\MutiFormVariable\\mutiformvariable\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{51CFAA8A-D9F4-4766-B15D-EF7A731B8D17}|MutiFormVariable\\MutiFormVariable.csproj|solutionrelative:mutiformvariable\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{51CFAA8A-D9F4-4766-B15D-EF7A731B8D17}|MutiFormVariable\\MutiFormVariable.csproj|c:\\users\\m303\\desktop\\114_2_c_sharp\\115_05_28\\mutiformvariable\\mutiformvariable\\secondform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{51CFAA8A-D9F4-4766-B15D-EF7A731B8D17}|MutiFormVariable\\MutiFormVariable.csproj|C:\\Users\\m303\\Desktop\\114_2_C_Sharp\\115_05_28\\MutiFormVariable\\mutiformvariable\\secondform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{51CFAA8A-D9F4-4766-B15D-EF7A731B8D17}|MutiFormVariable\\MutiFormVariable.csproj|solutionrelative:mutiformvariable\\secondform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{51CFAA8A-D9F4-4766-B15D-EF7A731B8D17}|MutiFormVariable\\MutiFormVariable.csproj|c:\\users\\m303\\desktop\\114_2_c_sharp\\115_05_28\\mutiformvariable\\mutiformvariable\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
+      "AbsoluteMoniker": "D:0:0:{51CFAA8A-D9F4-4766-B15D-EF7A731B8D17}|MutiFormVariable\\MutiFormVariable.csproj|C:\\Users\\m303\\Desktop\\114_2_C_Sharp\\115_05_28\\MutiFormVariable\\mutiformvariable\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form",
       "RelativeMoniker": "D:0:0:{51CFAA8A-D9F4-4766-B15D-EF7A731B8D17}|MutiFormVariable\\MutiFormVariable.csproj|solutionrelative:mutiformvariable\\mainform.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}|Form"
     }
   ],
@@ -26,8 +26,16 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 2,
           "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{56df62a4-05a3-4e5b-aa1a-99371ccfb997}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{cce594b6-0c39-4442-ba28-10c64ac7e89f}"
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
@@ -51,8 +59,7 @@
               "RelativeToolTip": "MutiFormVariable\\MainForm.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAACUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T07:27:50.225Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-28T07:27:50.225Z"
             },
             {
               "$type": "Document",
@@ -63,8 +70,7 @@
               "ToolTip": "C:\\Users\\m303\\Desktop\\114_2_C_Sharp\\115_05_28\\MutiFormVariable\\MutiFormVariable\\SecondForm.cs [\u8A2D\u8A08]",
               "RelativeToolTip": "MutiFormVariable\\SecondForm.cs [\u8A2D\u8A08]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T07:26:12.656Z",
-              "EditorCaption": " [\u8A2D\u8A08]"
+              "WhenOpened": "2026-05-28T07:26:12.656Z"
             },
             {
               "$type": "Document",
@@ -75,8 +81,7 @@
               "ToolTip": "C:\\Users\\m303\\Desktop\\114_2_C_Sharp\\115_05_28\\MutiFormVariable\\MutiFormVariable\\MainForm.cs [\u8A2D\u8A08]",
               "RelativeToolTip": "MutiFormVariable\\MainForm.cs [\u8A2D\u8A08]",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-28T07:23:42.588Z",
-              "EditorCaption": " [\u8A2D\u8A08]"
+              "WhenOpened": "2026-05-28T07:23:42.588Z"
             }
           ]
         }
