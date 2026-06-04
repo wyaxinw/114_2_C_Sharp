@@ -1,0 +1,66 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Food_Facts
+{
+    public partial class MainForm : Form
+    {
+        public MainForm()
+        {
+            InitializeComponent();
+        }
+
+        private void displayButton_Click(object sender, EventArgs e)
+        {
+            FoodItem selectedFood = null;
+           
+            
+            //
+          
+
+
+            // Find the selected radio button.
+            // 根據使用者選擇設定 NutritionForm 中顯示的內容（文字已改為繁體中文）
+            if (bananaRadioButton.Checked)
+            {
+                // 香蕉
+                nutriForm.foodLabel.Text = "1 根 香蕉";
+                nutriForm.caloriesLabel.Text = "100"; // 熱量（大卡）
+                nutriForm.fatLabel.Text = "0.4"; // 脂肪（克）
+                nutriForm.carbLabel.Text = "27"; // 碳水（克）
+            }
+            else if (popcornRadioButton.Checked)
+            {
+                // 空氣爆米花
+                nutriForm.foodLabel.Text = "1 杯 空氣爆米花";
+                nutriForm.caloriesLabel.Text = "31";
+                nutriForm.fatLabel.Text = "0.4";
+                nutriForm.carbLabel.Text = "6";
+            }
+            else if (muffinRadioButton.Checked)
+            {
+                // 大藍莓鬆餅
+                nutriForm.foodLabel.Text = "1 個 大藍莓鬆餅";
+                nutriForm.caloriesLabel.Text = "385";
+                nutriForm.fatLabel.Text = "9";
+                nutriForm.carbLabel.Text = "67";
+            }
+
+            // 顯示 NutritionForm 對話方塊
+            nutriForm.ShowDialog();
+        }
+
+        private void exitButton_Click(object sender, EventArgs e)
+        {
+            // 關閉主視窗
+            this.Close();
+        }
+    }
+}

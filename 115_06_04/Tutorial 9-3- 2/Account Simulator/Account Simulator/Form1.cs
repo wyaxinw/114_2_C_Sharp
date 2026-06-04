@@ -1,0 +1,103 @@
+﻿using System;
+using System.Windows.Forms;
+
+namespace Account_Simulator
+{
+    public partial class Form1 : Form
+    {
+        // 使用 BankAccount 類別管理帳戶，預設初始餘額 20000
+        private BankAccount account = new BankAccount(20000m);
+
+        public Form1()
+        {
+            InitializeComponent();
+        }
+
+        // 表單載入時，顯示初始餘額
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            balanceLabel.Text = account.GetBalance().ToString("C");
+        }
+
+        // 以帳號查詢帳戶。此專案目前只有單一預設帳戶，因此當該帳戶沒有設定帳號時
+        // 會直接回傳該預設帳戶以維持向下相容性。
+        private BankAccount searchAccount(string accountNumber)
+        {
+            // 如果只有單一帳戶且未設定帳號，直接回傳預設帳戶以方便測試/示範
+            if (this.account != null && string.IsNullOrEmpty(this.account.AccountNumber))
+            {
+                return this.account;
+            }
+
+            // 若未設定任何帳戶資料結構，回傳 null
+            if (this.account == null)
+                return null;
+
+            // 比對唯一帳戶的帳號
+            if (this.account.AccountNumber == accountNumber)
+                return this.account;
+
+            // 若未找到，顯示提示並回傳 null
+            MessageBox.Show("該帳號客戶不存在", "查無帳號", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            return null;
+        }
+
+        // 處理存款按鈕：解析輸入金額並呼叫 BankAccount.Deposit
+        private void depositButton_Click(object sender, EventArgs e)
+        {
+            decimal amount;
+            if (decimal.TryParse(depositTextBox.Text, out amount))
+            {
+                // 專案 UI 沒有帳號輸入欄，使用空字串以讓 searchAccount 回傳預設帳戶
+                BankAccount account = searchAccount(string.Empty);
+                if (account == null)
+                {
+                    return;
+                }
+                account.Deposit(amount);
+                balanceLabel.Text = account.AccountNumber + "\n"
+                    + account.GetBalance().ToString("C");
+                depositTextBox.Clear();
+            }
+            else
+            {
+                MessageBox.Show("請輸入有效的存款金額。", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        // 處理提款按鈕：解析輸入金額並呼叫 BankAccount.Withdraw
+        private void withdrawButton_Click(object sender, EventArgs e)
+        {
+            // 專案 UI 沒有帳號輸入欄，使用空字串以讓 searchAccount 回傳預設帳戶
+            BankAccount account = searchAccount(string.Empty);
+            if (account == null)
+            {
+                return;
+            }
+            decimal amount;
+            if (decimal.TryParse(withdrawTextBox.Text, out amount))
+            {
+                string accountNumber = account.AccountNumber;
+                account.Withdraw(amount);
+                balanceLabel.Text = account.GetBalance().ToString("C");
+                withdrawTextBox.Clear();
+            }
+            else
+            {
+                MessageBox.Show("請輸入有效的提款金額。", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        // 離開按鈕：關閉表單
+        private void exitButton_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        // Designer 可能會訂閱此事件，加入空的處理函式以避免編譯錯誤。
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+            // 保留供設計工具使用
+        }
+    }
+}
