@@ -1,0 +1,10 @@
+C:\Users\m303\Desktop\114_2_C_Sharp\115_06_04\Tutoria 9-2-3\Tutoria 9-2-3\obj\Debug\Tutoria 9-2-3.csproj.AssemblyReference.cache
+C:\Users\m303\Desktop\114_2_C_Sharp\115_06_04\Tutoria 9-2-3\Tutoria 9-2-3\obj\Debug\Tutoria_9_2_3.MainForm.resources
+C:\Users\m303\Desktop\114_2_C_Sharp\115_06_04\Tutoria 9-2-3\Tutoria 9-2-3\obj\Debug\Tutoria_9_2_3.Properties.Resources.resources
+C:\Users\m303\Desktop\114_2_C_Sharp\115_06_04\Tutoria 9-2-3\Tutoria 9-2-3\obj\Debug\Tutoria 9-2-3.csproj.GenerateResource.cache
+C:\Users\m303\Desktop\114_2_C_Sharp\115_06_04\Tutoria 9-2-3\Tutoria 9-2-3\obj\Debug\Tutoria 9-2-3.csproj.CoreCompileInputs.cache
+C:\Users\m303\Desktop\114_2_C_Sharp\115_06_04\Tutoria 9-2-3\Tutoria 9-2-3\bin\Debug\Tutoria 9-2-3.exe.config
+C:\Users\m303\Desktop\114_2_C_Sharp\115_06_04\Tutoria 9-2-3\Tutoria 9-2-3\bin\Debug\Tutoria 9-2-3.exe
+C:\Users\m303\Desktop\114_2_C_Sharp\115_06_04\Tutoria 9-2-3\Tutoria 9-2-3\bin\Debug\Tutoria 9-2-3.pdb
+C:\Users\m303\Desktop\114_2_C_Sharp\115_06_04\Tutoria 9-2-3\Tutoria 9-2-3\obj\Debug\Tutoria 9-2-3.exe
+C:\Users\m303\Desktop\114_2_C_Sharp\115_06_04\Tutoria 9-2-3\Tutoria 9-2-3\obj\Debug\Tutoria 9-2-3.pdb

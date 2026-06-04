@@ -1,0 +1,39 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace Tutoria_9_2_3
+{
+    public partial class OpenAccountForm : Form
+    {
+        partial List <BankAccount> bankAccounts;
+        public OpenAccountForm(List<BankAccount> bankAccounts)
+        {
+            InitializeComponent();
+            bankAccounts = accounts;
+        }
+
+        private void btnCreateAccount_Click(object sender, EventArgs e)
+        {
+            string accountNumber =accountNumber.TextBoxText
+            string name = txtName.Text.Trim();
+            decimal initialBalance;
+            // 驗證初始餘額是否為有效的數字
+            if (!decimal.TryParse(txtInitialBalance.Text.Trim(), out initialBalance) || initialBalance < 0)
+            {
+                MessageBox.Show("請輸入有效的初始餘額（非負數）。", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+            // 建立新的 BankAccount 物件並加入帳戶列表
+            BankAccount newAccount = new BankAccount(accountNumber, name, initialBalance);
+            bankAccounts.Add(newAccount);
+            // 顯示成功訊息並關閉表單
+            MessageBox.Show("帳戶開立成功！", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            this.Close();
+        }

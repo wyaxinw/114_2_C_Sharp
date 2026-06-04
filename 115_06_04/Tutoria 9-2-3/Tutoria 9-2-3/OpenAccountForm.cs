@@ -1,0 +1,62 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Tutoria_9_2_3.Account_Simulator;
+
+namespace Tutoria_9_2_3
+{
+    public partial class OpenAccountForm : Form
+    {
+        // 接收從主表單傳入的帳戶集合
+        private List<BankAccount> bankAccounts;
+
+        // 與 Designer 對應的控制項欄位
+        private System.Windows.Forms.Label labelAccount;
+        private System.Windows.Forms.TextBox txtAccountNumber;
+        private System.Windows.Forms.Label labelName;
+        private System.Windows.Forms.TextBox txtName;
+        private System.Windows.Forms.Label labelInitialBalance;
+        private System.Windows.Forms.TextBox txtInitialBalance;
+        private System.Windows.Forms.Button btnCreateAccount;
+
+        public OpenAccountForm(List<BankAccount> accounts)
+        {
+            InitializeComponent();
+            this.bankAccounts = accounts ?? new List<BankAccount>();
+        }
+
+        private void btnCreateAccount_Click(object sender, EventArgs e)
+        {
+            string accountNumber = this.txtAccountNumber.Text.Trim();
+            string name = this.txtName.Text.Trim();
+
+            if (string.IsNullOrEmpty(accountNumber))
+            {
+                MessageBox.Show("請輸入帳號。", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            decimal initialBalance;
+            // 驗證初始餘額是否為有效的數字
+            if (!decimal.TryParse(this.txtInitialBalance.Text.Trim(), out initialBalance) || initialBalance < 0)
+            {
+                MessageBox.Show("請輸入有效的初始餘額（非負數）。", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 建立新的 BankAccount 物件並加入帳戶列表
+            BankAccount newAccount = new BankAccount(accountNumber, name, initialBalance);
+            this.bankAccounts.Add(newAccount);
+            // 顯示成功訊息並關閉表單
+            MessageBox.Show("帳戶開立成功！", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            this.Close();
+        }
+
+    }
+}

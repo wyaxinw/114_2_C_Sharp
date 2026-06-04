@@ -1,0 +1,65 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using Tutoria_9_2_3.Account_Simulator;
+
+namespace Tutoria_9_2_3
+{
+    public partial class DepositForm : Form
+    {
+        // 用於接收從主表單傳入的帳戶列表
+        private List<BankAccount> bankAccounts;
+
+        // 設定表單元件欄位（與 Designer 對應）
+        private System.Windows.Forms.Label labelAccount;
+        private System.Windows.Forms.TextBox txtAccountNumber;
+        private System.Windows.Forms.Label labelAmount;
+        private System.Windows.Forms.TextBox txtAmount;
+        private System.Windows.Forms.Button btnDeposit;
+
+        // 建構子：接收帳戶列表
+        public DepositForm(List<BankAccount> accounts)
+        {
+            InitializeComponent();
+            this.bankAccounts = accounts ?? new List<BankAccount>();
+        }
+
+        // 存入按鈕事件處理：讀取帳號，找出對應帳戶，並執行存款
+        private void btnDeposit_Click(object sender, EventArgs e)
+        {
+            string acctNo = this.txtAccountNumber.Text.Trim();
+            if (string.IsNullOrEmpty(acctNo))
+            {
+                MessageBox.Show("請輸入帳號。", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 在列表中尋找具有相同帳號的 BankAccount（使用 AccountNumber 屬性）
+            var account = this.bankAccounts.FirstOrDefault(a => a.AccountNumber == acctNo);
+            if (account == null)
+            {
+                MessageBox.Show("找不到對應的帳戶。請確認帳號是否正確。", "未找到帳戶", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 解析存入金額
+            decimal amount;
+            if (!decimal.TryParse(this.txtAmount.Text.Trim(), out amount) || amount <= 0)
+            {
+                MessageBox.Show("請輸入有效的存入金額（> 0）。", "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // 執行存款操作並提示成功
+            account.Deposit(amount);
+            MessageBox.Show($"存款成功，帳號 {acctNo} 新餘額：{account.GetBalance():0.00}", "成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            this.Close();
+        }
+    }
+}
