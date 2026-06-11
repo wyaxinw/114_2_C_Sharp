@@ -1,0 +1,166 @@
+﻿namespace 員工資料管理系統
+{
+    partial class MainForm
+    {
+        /// <summary>
+        /// Required designer variable.
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// Clean up any resources being used.
+        /// </summary>
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form Designer generated code
+
+        /// <summary>
+        /// Required method for Designer support - do not modify
+        /// the contents of this method with the code editor.
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            this.panelLeft = new System.Windows.Forms.Panel();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.btnDelete = new System.Windows.Forms.Button();
+            this.btnUpdate = new System.Windows.Forms.Button();
+            this.btnAdd = new System.Windows.Forms.Button();
+            this.tbSalary = new System.Windows.Forms.TextBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.tbTitle = new System.Windows.Forms.TextBox();
+            this.label4 = new System.Windows.Forms.Label();
+            this.tbDept = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.tbName = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.tbID = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.tbSearch = new System.Windows.Forms.TextBox();
+            this.btnSearch = new System.Windows.Forms.Button();
+            this.dgvEmployees = new System.Windows.Forms.DataGridView();
+            // 
+            // panelLeft
+            // 
+            this.panelLeft.Dock = System.Windows.Forms.DockStyle.Left;
+            this.panelLeft.Width = 300;
+            this.panelLeft.Padding = new System.Windows.Forms.Padding(10);
+            // add controls to left panel
+            this.panelLeft.Controls.Add(this.btnClear);
+            this.panelLeft.Controls.Add(this.btnDelete);
+            this.panelLeft.Controls.Add(this.btnUpdate);
+            this.panelLeft.Controls.Add(this.btnAdd);
+            this.panelLeft.Controls.Add(this.tbSalary);
+            this.panelLeft.Controls.Add(this.label5);
+            this.panelLeft.Controls.Add(this.tbTitle);
+            this.panelLeft.Controls.Add(this.label4);
+            this.panelLeft.Controls.Add(this.tbDept);
+            this.panelLeft.Controls.Add(this.label3);
+            this.panelLeft.Controls.Add(this.tbName);
+            this.panelLeft.Controls.Add(this.label2);
+            this.panelLeft.Controls.Add(this.tbID);
+            this.panelLeft.Controls.Add(this.label1);
+            this.panelLeft.Controls.Add(this.tbSearch);
+            this.panelLeft.Controls.Add(this.btnSearch);
+            // 
+            // label1 / tbID
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 48);
+            this.label1.Text = "員工編號";
+            this.tbID.Location = new System.Drawing.Point(12, 68);
+            this.tbID.Width = 260;
+            // 
+            // label2 / tbName
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(12, 100);
+            this.label2.Text = "姓名";
+            this.tbName.Location = new System.Drawing.Point(12, 120);
+            this.tbName.Width = 260;
+            // 
+            // label3 / tbDept
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(12, 152);
+            this.label3.Text = "部門";
+            this.tbDept.Location = new System.Drawing.Point(12, 172);
+            this.tbDept.Width = 260;
+            // 
+            // label4 / tbTitle
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(12, 204);
+            this.label4.Text = "職稱";
+            this.tbTitle.Location = new System.Drawing.Point(12, 224);
+            this.tbTitle.Width = 260;
+            // 
+            // label5 / tbSalary
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(12, 256);
+            this.label5.Text = "薪資";
+            this.tbSalary.Location = new System.Drawing.Point(12, 276);
+            this.tbSalary.Width = 260;
+            // 
+            // btnAdd / btnUpdate / btnDelete / btnClear
+            // 
+            this.btnAdd.Location = new System.Drawing.Point(12, 320);
+            this.btnAdd.Text = "新增";
+            this.btnAdd.Width = 60;
+            this.btnUpdate.Location = new System.Drawing.Point(82, 320);
+            this.btnUpdate.Text = "修改";
+            this.btnUpdate.Width = 60;
+            this.btnDelete.Location = new System.Drawing.Point(152, 320);
+            this.btnDelete.Text = "刪除";
+            this.btnDelete.Width = 60;
+            this.btnClear.Location = new System.Drawing.Point(222, 320);
+            this.btnClear.Text = "清除";
+            this.btnClear.Width = 60;
+            // 
+            // tbSearch / btnSearch
+            // 
+            this.tbSearch.Location = new System.Drawing.Point(12, 10);
+            this.tbSearch.Width = 200;
+            this.tbSearch.PlaceholderText = "搜尋姓名/部門";
+            this.btnSearch.Location = new System.Drawing.Point(218, 8);
+            this.btnSearch.Text = "搜尋";
+            this.btnSearch.Width = 54;
+            // 
+            // dgvEmployees
+            // 
+            this.dgvEmployees.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvEmployees.AllowUserToAddRows = false;
+            this.dgvEmployees.AllowUserToDeleteRows = false;
+            this.dgvEmployees.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.dgvEmployees.MultiSelect = false;
+            // 
+            // MainForm
+            // 
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(900, 520);
+            this.Text = "員工資料管理系統";
+            // add to form
+            this.Controls.Add(this.dgvEmployees);
+            this.Controls.Add(this.panelLeft);
+
+            // wire events
+            this.btnAdd.Click += new System.EventHandler(this.btnAdd_Click);
+            this.btnUpdate.Click += new System.EventHandler(this.btnUpdate_Click);
+            this.btnDelete.Click += new System.EventHandler(this.btnDelete_Click);
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            this.btnSearch.Click += new System.EventHandler(this.btnSearch_Click);
+            this.dgvEmployees.SelectionChanged += new System.EventHandler(this.dgvEmployees_SelectionChanged);
+        }
+
+        #endregion
+    }
+}

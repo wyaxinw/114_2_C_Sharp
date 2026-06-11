@@ -1,0 +1,40 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace 員工資料管理系統
+{
+    public partial class SearchForm : Form
+    {
+        private List<Employee> employeeList;
+        public SearchForm(List<Employee> list)
+        {
+            InitializeComponent();
+            employeeList = list;
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            string q = tbKeyword.Text.Trim();
+            lstResults.Items.Clear();
+            if (string.IsNullOrEmpty(q)) return;
+            foreach (var emp in employeeList)
+            {
+                if (emp.Name.IndexOf(q, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                    lstResults.Items.Add(emp.ToString());
+                else
+                {
+                    int id;
+                    if (int.TryParse(q, out id) && emp.IdNumber == id)
+                        lstResults.Items.Add(emp.ToString());
+                }
+            }
+        }
+
+        private void btnClose_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+    }
+}

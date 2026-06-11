@@ -1,0 +1,35 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Windows.Forms;
+
+namespace 員工資料管理系統
+{
+    public partial class DeleteForm : Form
+    {
+        private List<Employee> employeeList;
+        private int index;
+        public DeleteForm(List<Employee> list, int index)
+        {
+            InitializeComponent();
+            this.employeeList = list;
+            this.index = index;
+            lblInfo.Text = list[index].ToString();
+        }
+
+        private void btnConfirm_Click(object sender, EventArgs e)
+        {
+            if (index >= 0 && index < employeeList.Count)
+            {
+                employeeList.RemoveAt(index);
+                this.DialogResult = DialogResult.OK;
+                this.Close();
+            }
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
+    }
+}

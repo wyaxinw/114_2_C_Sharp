@@ -1,12 +1,56 @@
-ï»¿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace å“¡å·¥è³‡æ–™ç®¡ç†ç³»çµ±
+namespace ­û¤u¸ê®ÆºŞ²z¨t²Î
 {
-    internal class Employee
+    /// <summary>
+    /// ­û¤u¸ê®ÆÃş§O¡A²Å¦X³W®æ®Ñ¤¤ Employee Ãş§O©w¸q
+    /// </summary>
+    public class Employee
     {
+        // ©m¦W
+        public string Name { get; set; }
+        // ­û¤u½s¸¹¡]°ß¤@ÃÑ§O½X¡^
+        public int IdNumber { get; set; }
+        // ³¡ªù
+        public string Department { get; set; }
+        // Â¾ºÙ
+        public string Position { get; set; }
+
+        // µL°Ñ¼Æ«Øºc¤l¡G¹w³]­È
+        public Employee()
+        {
+            Name = string.Empty;
+            Department = string.Empty;
+            Position = string.Empty;
+            IdNumber = 0;
+        }
+
+        // ¨â°Ñ¼Æ«Øºc¤l¡G«ü©w©m¦W»P½s¸¹¡A¨ä¥L¬°¹w³]ªÅ¦r¦ê
+        public Employee(string name, int idNumber)
+        {
+            // ±N©m¦W­×°Å¨Ã³]©w½s¸¹¡A¨ä¥LÄİ©Ê³]¬°ªÅ¦r¦ê
+            Name = (name ?? string.Empty).Trim();
+            IdNumber = idNumber;
+            Department = string.Empty;
+            Position = string.Empty;
+        }
+
+        // ¥|°Ñ¼Æ«Øºc¤l¡G§¹¾ã«ü©w©Ò¦³Äİ©Ê
+        public Employee(string name, int idNumber, string department, string position)
+        {
+            Name = name ?? string.Empty;
+            IdNumber = idNumber;
+            Department = department ?? string.Empty;
+            Position = position ?? string.Empty;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}\t{1}", IdNumber, Name);
+        }
     }
 }

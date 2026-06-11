@@ -1,0 +1,134 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace 員工資料管理系統
+{
+    public partial class MainForm : Form
+    {
+        // 依規格書：使用 List<Employee> 作為資料儲存
+        private List<Employee> employeeList = new List<Employee>();
+
+        public MainForm()
+        {
+            InitializeComponent();
+            // 初始測試資料（可移除）
+            employeeList.Add(new Employee("王小明", 1001, "資訊部", "工程師"));
+            employeeList.Add(new Employee("陳美華", 1002, "人資部", "專員"));
+            RefreshList();
+        }
+
+        // 重新整理 ListBox 顯示內容
+        private void RefreshList()
+        {
+            lstEmployees.Items.Clear();
+            foreach (var emp in employeeList)
+            {
+                lstEmployees.Items.Add(emp.ToString());
+            }
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            // 開啟新增表單，透過建構子注入 employeeList 的參考
+            using (var addForm = new AddForm(employeeList))
+            {
+                if (addForm.ShowDialog(this) == DialogResult.OK)
+                {
+                    RefreshList();
+                }
+            }
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            // 修改選取的員工資料
+            if (lstEmployees.SelectedIndex < 0) return;
+            var selected = employeeList[lstEmployees.SelectedIndex];
+            using (var mod = new ModifyForm(selected))
+            {
+                if (mod.ShowDialog(this) == DialogResult.OK)
+                {
+                    RefreshList();
+                }
+            }
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            // 開啟刪除確認表單，由子表單處理刪除邏輯
+            if (lstEmployees.SelectedIndex < 0) return;
+            int idx = lstEmployees.SelectedIndex;
+            using (var del = new DeleteForm(employeeList, idx))
+            {
+                if (del.ShowDialog(this) == System.Windows.Forms.DialogResult.OK)
+                {
+                    RefreshList();
+                }
+            }
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            // 清除搜尋並重整清單顯示
+            tbSearch.Text = string.Empty;
+            RefreshList();
+        }
+
+        private void ClearInputs()
+        {
+            // 將所有輸入欄位重設為空字串
+            tbID.Text = string.Empty;
+            tbName.Text = string.Empty;
+            tbDept.Text = string.Empty;
+            tbTitle.Text = string.Empty;
+            tbSalary.Text = string.Empty;
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            // 開啟搜尋表單，由子表單處理搜尋顯示
+            using (var sf = new SearchForm(employeeList))
+            {
+                sf.ShowDialog(this);
+            }
+        }
+
+        private void dgvEmployees_SelectionChanged(object sender, EventArgs e)
+        {
+            // 保留舊處理器簽章，但主流程改為使用 ListBox 的選取事件
+        }
+
+        private void lstEmployees_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // 顯示選取員工的詳細資訊（若有）
+            if (lstEmployees.SelectedIndex < 0) return;
+            var emp = employeeList[lstEmployees.SelectedIndex];
+            tbID.Text = emp.IdNumber.ToString();
+            tbName.Text = emp.Name;
+            tbDept.Text = emp.Department;
+            tbTitle.Text = emp.Position;
+        }
+
+        private void btnExit_Click(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+        private void tbSearch_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void tbID_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+    }
+}

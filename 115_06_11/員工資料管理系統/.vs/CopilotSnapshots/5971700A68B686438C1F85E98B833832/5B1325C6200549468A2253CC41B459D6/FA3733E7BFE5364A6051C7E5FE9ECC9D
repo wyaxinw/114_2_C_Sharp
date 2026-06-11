@@ -1,0 +1,59 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace 員工資料管理系統
+{
+    public partial class AddForm : Form
+    {
+        private List<Employee> employeeList;
+        public AddForm(List<Employee> employeeList)
+        {
+            InitializeComponent();
+            this.employeeList = employeeList;
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            // 驗證工號
+            int id;
+            if (!int.TryParse(tbId.Text.Trim(), out id))
+            {
+                MessageBox.Show("工號必須為數字");
+                return;
+            }
+            // 檢查重複
+            if (employeeList.Any(x => x.IdNumber == id))
+            {
+                MessageBox.Show("工號已存在");
+                return;
+            }
+
+            string name = tbName.Text.Trim();
+            string dept = tbDept.Text.Trim();
+            string pos = tbPosition.Text.Trim();
+
+            Employee emp;
+            if (string.IsNullOrEmpty(dept) || string.IsNullOrEmpty(pos))
+            {
+                // 使用兩參數建構子
+                emp = new Employee(name, id);
+            }
+            else
+            {
+                emp = new Employee(name, id, dept, pos);
+            }
+
+            employeeList.Add(emp);
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
+    }
+}

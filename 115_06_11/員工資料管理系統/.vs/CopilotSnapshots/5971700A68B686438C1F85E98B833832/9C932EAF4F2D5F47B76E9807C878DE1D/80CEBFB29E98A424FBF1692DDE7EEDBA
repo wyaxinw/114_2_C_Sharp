@@ -1,0 +1,118 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace 員工資料管理系統
+{
+    public partial class MainForm : Form
+    {
+        private DataTable table;
+        public MainForm()
+        {
+            InitializeComponent();
+            InitTable();
+        }
+
+        private void InitTable()
+        {
+            table = new DataTable();
+            table.Columns.Add("ID", typeof(string));
+            table.Columns.Add("Name", typeof(string));
+            table.Columns.Add("Dept", typeof(string));
+            table.Columns.Add("Title", typeof(string));
+            table.Columns.Add("Salary", typeof(decimal));
+
+            // bind
+            this.dgvEmployees.DataSource = table;
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            if (string.IsNullOrWhiteSpace(tbID.Text)) return;
+            decimal sal = 0;
+            decimal.TryParse(tbSalary.Text, out sal);
+            var row = table.NewRow();
+            row["ID"] = tbID.Text.Trim();
+            row["Name"] = tbName.Text.Trim();
+            row["Dept"] = tbDept.Text.Trim();
+            row["Title"] = tbTitle.Text.Trim();
+            row["Salary"] = sal;
+            table.Rows.Add(row);
+            ClearInputs();
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            if (dgvEmployees.CurrentRow == null) return;
+            var dr = (dgvEmployees.CurrentRow.DataBoundItem as DataRowView)?.Row;
+            if (dr == null) return;
+            dr["ID"] = tbID.Text.Trim();
+            dr["Name"] = tbName.Text.Trim();
+            dr["Dept"] = tbDept.Text.Trim();
+            dr["Title"] = tbTitle.Text.Trim();
+            decimal sal = 0; decimal.TryParse(tbSalary.Text, out sal);
+            dr["Salary"] = sal;
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (dgvEmployees.CurrentRow == null) return;
+            var dr = (dgvEmployees.CurrentRow.DataBoundItem as DataRowView)?.Row;
+            if (dr == null) return;
+            table.Rows.Remove(dr);
+            ClearInputs();
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            ClearInputs();
+            tbSearch.Text = string.Empty;
+            dgvEmployees.DataSource = table;
+        }
+
+        private void ClearInputs()
+        {
+            tbID.Text = string.Empty;
+            tbName.Text = string.Empty;
+            tbDept.Text = string.Empty;
+            tbTitle.Text = string.Empty;
+            tbSalary.Text = string.Empty;
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            string q = tbSearch.Text.Trim();
+            if (string.IsNullOrEmpty(q))
+            {
+                dgvEmployees.DataSource = table;
+                return;
+            }
+            var dv = new DataView(table);
+            // simple contains search on Name or Dept
+            dv.RowFilter = string.Format("Name LIKE '%{0}%' OR Dept LIKE '%{0}%'", q.Replace("'", "''"));
+            dgvEmployees.DataSource = dv;
+        }
+
+        private void dgvEmployees_SelectionChanged(object sender, EventArgs e)
+        {
+            if (dgvEmployees.CurrentRow == null) return;
+            var drv = dgvEmployees.CurrentRow.DataBoundItem as DataRowView;
+            if (drv == null) return;
+            tbID.Text = drv["ID"].ToString();
+            tbName.Text = drv["Name"].ToString();
+            tbDept.Text = drv["Dept"].ToString();
+            tbTitle.Text = drv["Title"].ToString();
+            tbSalary.Text = drv["Salary"].ToString();
+        }
+        public MainForm()
+        {
+            InitializeComponent();
+        }
+    }
+}

@@ -1,0 +1,408 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Linq;
+using System.Windows.Forms;
+
+namespace 員工資料管理系統
+{
+    // 資料類別：Employee
+    public class Employee
+    {
+        public string Name { get; set; }
+        public int IdNumber { get; set; }
+        public string Department { get; set; }
+        public string Position { get; set; }
+
+        public Employee()
+        {
+            Name = string.Empty;
+            Department = string.Empty;
+            Position = string.Empty;
+            IdNumber = 0;
+        }
+
+        public Employee(string name, int idNumber)
+        {
+            Name = (name ?? string.Empty).Trim();
+            IdNumber = idNumber;
+            Department = string.Empty;
+            Position = string.Empty;
+        }
+
+        public Employee(string name, int idNumber, string department, string position)
+        {
+            Name = name ?? string.Empty;
+            IdNumber = idNumber;
+            Department = department ?? string.Empty;
+            Position = position ?? string.Empty;
+        }
+
+        public override string ToString()
+        {
+            return string.Format("{0}\t{1}", IdNumber, Name);
+        }
+    }
+
+    // Program.Main 已存在於專案其他檔案，這裡不再定義
+
+    // 主表單 EmployeeRoster
+    public class EmployeeRoster : Form
+    {
+        public List<Employee> Employees { get; private set; } = new List<Employee>();
+
+        public Button btnAdd;
+        public Button btnDelete;
+        public Button btnModify;
+        public Button btnSearch;
+        public Button btnExit;
+        public Label lblListTitle;
+        public ListBox employeeListBox;
+
+        public EmployeeRoster()
+        {
+            Text = "Employee Roster";
+            Width = 700;
+            Height = 480;
+            StartPosition = FormStartPosition.CenterScreen;
+
+            InitializeComponents();
+
+            // sample data
+            Employees.Add(new Employee("王小明", 1001, "資訊部", "工程師"));
+            Employees.Add(new Employee("陳美華", 1002, "人資部", "專員"));
+            RefreshEmployeeList();
+        }
+
+        private void InitializeComponents()
+        {
+            // left panel for buttons
+            var panelLeft = new Panel()
+            {
+                Dock = DockStyle.Left,
+                Width = 200,
+                Padding = new Padding(10)
+            };
+
+            btnAdd = new Button() { Text = "新增員工", Height = 38, Dock = DockStyle.Top }; btnAdd.Click += BtnAdd_Click;
+            btnDelete = new Button() { Text = "刪除員工", Height = 38, Dock = DockStyle.Top }; btnDelete.Click += BtnDelete_Click;
+            btnModify = new Button() { Text = "修改員工", Height = 38, Dock = DockStyle.Top }; btnModify.Click += BtnModify_Click;
+            btnSearch = new Button() { Text = "查詢員工", Height = 38, Dock = DockStyle.Top }; btnSearch.Click += BtnSearch_Click;
+            btnExit = new Button() { Text = "離開", Height = 38, Dock = DockStyle.Top }; btnExit.Click += (s, e) => this.Close();
+
+            // add buttons in order (Top adds in reverse), so add in reverse order
+            panelLeft.Controls.Add(btnExit);
+            panelLeft.Controls.Add(btnSearch);
+            panelLeft.Controls.Add(btnModify);
+            panelLeft.Controls.Add(btnDelete);
+            panelLeft.Controls.Add(btnAdd);
+
+            // right area
+            var panelRight = new Panel() { Dock = DockStyle.Fill, Padding = new Padding(12) };
+            lblListTitle = new Label() { Text = "員工編號與姓名：", AutoSize = true, Font = new Font(FontFamily.GenericSansSerif, 10, FontStyle.Bold) };
+            employeeListBox = new ListBox() { Dock = DockStyle.Bottom, Height = 360 }; // will be placed below title
+
+            panelRight.Controls.Add(employeeListBox);
+            panelRight.Controls.Add(lblListTitle);
+
+            Controls.Add(panelRight);
+            Controls.Add(panelLeft);
+        }
+
+        // RefreshEmployeeList: clear and repopulate ListBox
+        public void RefreshEmployeeList()
+        {
+            employeeListBox.Items.Clear();
+            foreach (var emp in Employees)
+                employeeListBox.Items.Add(emp.ToString());
+        }
+
+        private void BtnAdd_Click(object sender, EventArgs e)
+        {
+            using (var f = new AddForm(this))
+            {
+                f.ShowDialog(this);
+            }
+        }
+
+        private void BtnDelete_Click(object sender, EventArgs e)
+        {
+            using (var f = new DeleteForm(this))
+            {
+                f.ShowDialog(this);
+            }
+        }
+
+        private void BtnModify_Click(object sender, EventArgs e)
+        {
+            using (var f = new ModifyForm(this))
+            {
+                f.ShowDialog(this);
+            }
+        }
+
+        private void BtnSearch_Click(object sender, EventArgs e)
+        {
+            using (var f = new SearchForm(this))
+            {
+                f.ShowDialog(this);
+            }
+        }
+    }
+
+    // AddForm
+    public partial class AddForm : Form
+    {
+        private EmployeeRoster roster;
+        public TextBox txtId, txtName, txtDept, txtPosition; // public per spec-like names
+        private Button btnAdd, btnClose;
+        private TextBox txtMsg; // read-only multi-line
+
+        public AddForm(EmployeeRoster roster)
+        {
+            this.roster = roster ?? throw new ArgumentNullException(nameof(roster));
+            Text = "新增員工";
+            Width = 420; Height = 360; StartPosition = FormStartPosition.CenterParent;
+            InitializeComponents();
+        }
+
+        private void InitializeComponents()
+        {
+            var lblId = new Label() { Text = "工號：", Left = 12, Top = 12, AutoSize = true };
+            txtId = new TextBox() { Left = 100, Top = 10, Width = 260 };
+
+            var lblName = new Label() { Text = "姓名：", Left = 12, Top = 44, AutoSize = true };
+            txtName = new TextBox() { Left = 100, Top = 42, Width = 260 };
+
+            var lblDept = new Label() { Text = "部門：", Left = 12, Top = 76, AutoSize = true };
+            txtDept = new TextBox() { Left = 100, Top = 74, Width = 260 };
+
+            var lblPos = new Label() { Text = "職稱：", Left = 12, Top = 108, AutoSize = true };
+            txtPosition = new TextBox() { Left = 100, Top = 106, Width = 260 };
+
+            btnAdd = new Button() { Text = "新增", Left = 100, Top = 140, Width = 100 };
+            btnClose = new Button() { Text = "離開", Left = 220, Top = 140, Width = 100 };
+
+            btnAdd.Click += BtnAdd_Click;
+            btnClose.Click += (s, e) => this.Close();
+
+            txtMsg = new TextBox() { Left = 12, Top = 180, Width = 360, Height = 120, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical };
+
+            Controls.AddRange(new Control[] { lblId, txtId, lblName, txtName, lblDept, txtDept, lblPos, txtPosition, btnAdd, btnClose, txtMsg });
+        }
+
+        private void BtnAdd_Click(object sender, EventArgs e)
+        {
+            txtMsg.Clear();
+            if (!int.TryParse(txtId.Text.Trim(), out int id))
+            {
+                txtMsg.Text = "工號必須為整數。";
+                return;
+            }
+
+            if (roster.Employees.Any(x => x.IdNumber == id))
+            {
+                txtMsg.Text = "工號已存在，不可重複。";
+                return;
+            }
+
+            string name = txtName.Text.Trim();
+            string dept = txtDept.Text.Trim();
+            string pos = txtPosition.Text.Trim();
+
+            Employee emp;
+            if (string.IsNullOrEmpty(dept) || string.IsNullOrEmpty(pos))
+            {
+                emp = new Employee(name, id);
+            }
+            else
+            {
+                emp = new Employee(name, id, dept, pos);
+            }
+
+            roster.Employees.Add(emp);
+            roster.RefreshEmployeeList();
+            txtMsg.Text = "新增完成。" + Environment.NewLine + emp.ToString();
+            // clear inputs for next
+            txtId.Clear(); txtName.Clear(); txtDept.Clear(); txtPosition.Clear();
+        }
+    }
+
+    // DeleteForm
+    public partial class DeleteForm : Form
+    {
+        private EmployeeRoster roster;
+        private Label lblPrompt;
+        public TextBox txtId;
+        private Button btnDelete, btnClose;
+        private TextBox txtMsg;
+
+        public DeleteForm(EmployeeRoster roster)
+        {
+            this.roster = roster ?? throw new ArgumentNullException(nameof(roster));
+            Text = "刪除員工"; Width = 380; Height = 240; StartPosition = FormStartPosition.CenterParent;
+            InitializeComponents();
+        }
+
+        private void InitializeComponents()
+        {
+            lblPrompt = new Label() { Text = "輸入欲刪除之工號：", Left = 12, Top = 12, AutoSize = true };
+            txtId = new TextBox() { Left = 150, Top = 10, Width = 180 };
+            btnDelete = new Button() { Text = "刪除", Left = 60, Top = 44, Width = 100 };
+            btnClose = new Button() { Text = "關閉", Left = 180, Top = 44, Width = 100 };
+            btnDelete.Click += BtnDelete_Click;
+            btnClose.Click += (s, e) => this.Close();
+            txtMsg = new TextBox() { Left = 12, Top = 84, Width = 320, Height = 100, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical };
+
+            Controls.AddRange(new Control[] { lblPrompt, txtId, btnDelete, btnClose, txtMsg });
+        }
+
+        private void BtnDelete_Click(object sender, EventArgs e)
+        {
+            txtMsg.Clear();
+            if (!int.TryParse(txtId.Text.Trim(), out int id))
+            {
+                txtMsg.Text = "請輸入有效的工號 (整數)。";
+                return;
+            }
+
+            var emp = roster.Employees.FirstOrDefault(x => x.IdNumber == id);
+            if (emp == null)
+            {
+                txtMsg.Text = "查無此員工。";
+                return;
+            }
+
+            roster.Employees.Remove(emp);
+            roster.RefreshEmployeeList();
+            txtMsg.Text = $"已刪除：{emp.IdNumber}\t{emp.Name}";
+        }
+    }
+
+    // ModifyForm
+    public partial class ModifyForm : Form
+    {
+        private EmployeeRoster roster;
+        private Label lblId;
+        public TextBox txtId, txtName, txtDept, txtPosition;
+        private Button btnQuery, btnSave, btnClose;
+        private TextBox txtMsg;
+        private Employee current;
+
+        public ModifyForm(EmployeeRoster roster)
+        {
+            this.roster = roster ?? throw new ArgumentNullException(nameof(roster));
+            Text = "修改員工資料"; Width = 420; Height = 380; StartPosition = FormStartPosition.CenterParent;
+            InitializeComponents();
+        }
+
+        private void InitializeComponents()
+        {
+            lblId = new Label() { Text = "工號：", Left = 12, Top = 12, AutoSize = true };
+            txtId = new TextBox() { Left = 80, Top = 10, Width = 200 };
+            btnQuery = new Button() { Text = "查詢", Left = 292, Top = 8, Width = 70 };
+            btnQuery.Click += BtnQuery_Click;
+
+            var lblName = new Label() { Text = "姓名：", Left = 12, Top = 52, AutoSize = true };
+            txtName = new TextBox() { Left = 80, Top = 50, Width = 282 };
+
+            var lblDept = new Label() { Text = "部門：", Left = 12, Top = 92, AutoSize = true };
+            txtDept = new TextBox() { Left = 80, Top = 90, Width = 282 };
+
+            var lblPos = new Label() { Text = "職稱：", Left = 12, Top = 132, AutoSize = true };
+            txtPosition = new TextBox() { Left = 80, Top = 130, Width = 282 };
+
+            btnSave = new Button() { Text = "儲存", Left = 80, Top = 170, Width = 100 };
+            btnClose = new Button() { Text = "關閉", Left = 200, Top = 170, Width = 100 };
+            btnSave.Click += BtnSave_Click;
+            btnClose.Click += (s, e) => this.Close();
+
+            txtMsg = new TextBox() { Left = 12, Top = 210, Width = 350, Height = 120, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical };
+
+            Controls.AddRange(new Control[] { lblId, txtId, btnQuery, lblName, txtName, lblDept, txtDept, lblPos, txtPosition, btnSave, btnClose, txtMsg });
+        }
+
+        private void BtnQuery_Click(object sender, EventArgs e)
+        {
+            txtMsg.Clear();
+            current = null;
+            if (!int.TryParse(txtId.Text.Trim(), out int id))
+            {
+                txtMsg.Text = "請輸入有效工號 (整數)。";
+                return;
+            }
+            current = roster.Employees.FirstOrDefault(x => x.IdNumber == id);
+            if (current == null)
+            {
+                txtMsg.Text = "查無此員工。";
+                return;
+            }
+            // populate fields
+            txtName.Text = current.Name;
+            txtDept.Text = current.Department;
+            txtPosition.Text = current.Position;
+            txtMsg.Text = "已載入資料，可修改後按儲存。";
+        }
+
+        private void BtnSave_Click(object sender, EventArgs e)
+        {
+            if (current == null)
+            {
+                txtMsg.Text = "請先查詢欲修改之員工。";
+                return;
+            }
+            current.Name = txtName.Text.Trim();
+            current.Department = txtDept.Text.Trim();
+            current.Position = txtPosition.Text.Trim();
+            roster.RefreshEmployeeList();
+            txtMsg.Text = "修改完成。";
+        }
+    }
+
+    // SearchForm
+    public partial class SearchForm : Form
+    {
+        private EmployeeRoster roster;
+        public TextBox txtId;
+        private Button btnQuery, btnClose;
+        private TextBox txtMsg;
+
+        public SearchForm(EmployeeRoster roster)
+        {
+            this.roster = roster ?? throw new ArgumentNullException(nameof(roster));
+            Text = "查詢員工"; Width = 420; Height = 300; StartPosition = FormStartPosition.CenterParent;
+            InitializeComponents();
+        }
+
+        private void InitializeComponents()
+        {
+            var lblId = new Label() { Text = "工號：", Left = 12, Top = 12, AutoSize = true };
+            txtId = new TextBox() { Left = 80, Top = 10, Width = 200 };
+            btnQuery = new Button() { Text = "查詢", Left = 292, Top = 8, Width = 70 };
+            btnQuery.Click += BtnQuery_Click;
+
+            txtMsg = new TextBox() { Left = 12, Top = 44, Width = 360, Height = 180, Multiline = true, ReadOnly = true, ScrollBars = ScrollBars.Vertical };
+            btnClose = new Button() { Text = "關閉", Left = 160, Top = 230, Width = 100 };
+            btnClose.Click += (s, e) => this.Close();
+
+            Controls.AddRange(new Control[] { lblId, txtId, btnQuery, txtMsg, btnClose });
+        }
+
+        private void BtnQuery_Click(object sender, EventArgs e)
+        {
+            txtMsg.Clear();
+            if (!int.TryParse(txtId.Text.Trim(), out int id))
+            {
+                txtMsg.Text = "請輸入有效工號 (整數)。";
+                return;
+            }
+            var emp = roster.Employees.FirstOrDefault(x => x.IdNumber == id);
+            if (emp == null)
+            {
+                txtMsg.Text = "查無此員工。";
+                return;
+            }
+            txtMsg.Text = $"員工編號：{emp.IdNumber}{Environment.NewLine}姓名：{emp.Name}{Environment.NewLine}部門：{emp.Department}{Environment.NewLine}職稱：{emp.Position}";
+        }
+    }
+}

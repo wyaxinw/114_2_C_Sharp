@@ -1,0 +1,36 @@
+﻿using System;
+using System.Windows.Forms;
+
+namespace 員工資料管理系統
+{
+    public partial class ModifyForm : Form
+    {
+        private Employee employee;
+        public ModifyForm(Employee emp)
+        {
+            InitializeComponent();
+            this.employee = emp;
+            // 載入資料
+            lblId.Text = emp.IdNumber.ToString();
+            tbName.Text = emp.Name;
+            tbDept.Text = emp.Department;
+            tbPosition.Text = emp.Position;
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            // 更新員工資料（工號不可變）
+            employee.Name = tbName.Text.Trim();
+            employee.Department = tbDept.Text.Trim();
+            employee.Position = tbPosition.Text.Trim();
+            this.DialogResult = DialogResult.OK;
+            this.Close();
+        }
+
+        private void btnCancel_Click(object sender, EventArgs e)
+        {
+            this.DialogResult = DialogResult.Cancel;
+            this.Close();
+        }
+    }
+}

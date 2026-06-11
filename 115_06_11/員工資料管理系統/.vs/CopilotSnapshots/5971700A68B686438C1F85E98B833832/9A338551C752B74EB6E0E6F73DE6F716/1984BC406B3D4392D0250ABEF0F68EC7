@@ -1,0 +1,124 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
+namespace 員工資料管理系統
+{
+    public partial class MainForm : Form
+    {
+        // 使用 DataTable 作為記憶體中的員工資料表
+        private DataTable table;
+        public MainForm()
+        {
+            InitializeComponent();
+            InitTable();
+        }
+
+        private void InitTable()
+        {
+            // 初始化 DataTable 結構（欄位：ID, Name, Dept, Title, Salary）
+            table = new DataTable();
+            table.Columns.Add("ID", typeof(string));
+            table.Columns.Add("Name", typeof(string));
+            table.Columns.Add("Dept", typeof(string));
+            table.Columns.Add("Title", typeof(string));
+            table.Columns.Add("Salary", typeof(decimal));
+
+            // 將 DataTable 綁定到 DataGridView 顯示資料
+            this.dgvEmployees.DataSource = table;
+        }
+
+        private void btnAdd_Click(object sender, EventArgs e)
+        {
+            // 新增一筆員工資料到 DataTable
+            if (string.IsNullOrWhiteSpace(tbID.Text)) return;
+            decimal sal = 0;
+            decimal.TryParse(tbSalary.Text, out sal);
+            var row = table.NewRow();
+            row["ID"] = tbID.Text.Trim();
+            row["Name"] = tbName.Text.Trim();
+            row["Dept"] = tbDept.Text.Trim();
+            row["Title"] = tbTitle.Text.Trim();
+            row["Salary"] = sal;
+            table.Rows.Add(row);
+            // 新增後清空輸入欄位
+            ClearInputs();
+        }
+
+        private void btnUpdate_Click(object sender, EventArgs e)
+        {
+            // 以目前選取的資料列更新 DataTable 中的欄位
+            if (dgvEmployees.CurrentRow == null) return;
+            var dr = (dgvEmployees.CurrentRow.DataBoundItem as DataRowView)?.Row;
+            if (dr == null) return;
+            dr["ID"] = tbID.Text.Trim();
+            dr["Name"] = tbName.Text.Trim();
+            dr["Dept"] = tbDept.Text.Trim();
+            dr["Title"] = tbTitle.Text.Trim();
+            decimal sal = 0; decimal.TryParse(tbSalary.Text, out sal);
+            dr["Salary"] = sal;
+        }
+
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            // 刪除目前選取的資料列
+            if (dgvEmployees.CurrentRow == null) return;
+            var dr = (dgvEmployees.CurrentRow.DataBoundItem as DataRowView)?.Row;
+            if (dr == null) return;
+            table.Rows.Remove(dr);
+            ClearInputs();
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            // 清除輸入欄位與搜尋欄，並還原 DataGridView 的資料來源
+            ClearInputs();
+            tbSearch.Text = string.Empty;
+            dgvEmployees.DataSource = table;
+        }
+
+        private void ClearInputs()
+        {
+            // 將所有輸入欄位重設為空字串
+            tbID.Text = string.Empty;
+            tbName.Text = string.Empty;
+            tbDept.Text = string.Empty;
+            tbTitle.Text = string.Empty;
+            tbSalary.Text = string.Empty;
+        }
+
+        private void btnSearch_Click(object sender, EventArgs e)
+        {
+            // 依姓名或部門進行簡單的包含式搜尋
+            string q = tbSearch.Text.Trim();
+            if (string.IsNullOrEmpty(q))
+            {
+                dgvEmployees.DataSource = table;
+                return;
+            }
+            var dv = new DataView(table);
+            // 使用 RowFilter 做包含搜尋（避免單引號造成的 SQL 注入樣式錯誤）
+            dv.RowFilter = string.Format("Name LIKE '%{0}%' OR Dept LIKE '%{0}%'", q.Replace("'", "''"));
+            dgvEmployees.DataSource = dv;
+        }
+
+        private void dgvEmployees_SelectionChanged(object sender, EventArgs e)
+        {
+            // 當 DataGridView 選取列改變時，將該列的值填回輸入欄位
+            if (dgvEmployees.CurrentRow == null) return;
+            var drv = dgvEmployees.CurrentRow.DataBoundItem as DataRowView;
+            if (drv == null) return;
+            tbID.Text = drv["ID"].ToString();
+            tbName.Text = drv["Name"].ToString();
+            tbDept.Text = drv["Dept"].ToString();
+            tbTitle.Text = drv["Title"].ToString();
+            tbSalary.Text = drv["Salary"].ToString();
+        }
+    }
+}
