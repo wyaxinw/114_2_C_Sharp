@@ -1,0 +1,154 @@
+﻿namespace 摩斯密碼轉換器
+{
+    partial class Form1
+    {
+        /// <summary>
+        /// 設計工具所需的變數。
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+        private System.Windows.Forms.Label labelInput;
+        private System.Windows.Forms.TextBox txtInput;
+        private System.Windows.Forms.Label labelFullMorse;
+        private System.Windows.Forms.TextBox txtOutput;
+        private System.Windows.Forms.Label labelMapping;
+        private System.Windows.Forms.ListBox lstMapping;
+        private System.Windows.Forms.Button btnConvert;
+        private System.Windows.Forms.Button btnClear;
+
+        /// <summary>
+        /// 清除任何使用中的資源。
+        /// </summary>
+        /// <param name="disposing">如果應該處置受控資源則為 true，否則為 false。</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form 設計工具產生的程式碼
+
+        /// <summary>
+        /// 此為設計工具支援所需的方法 - 請勿使用程式碼編輯器修改
+        /// 這個方法的內容。
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.labelInput = new System.Windows.Forms.Label();
+            this.txtInput = new System.Windows.Forms.TextBox();
+            this.labelFullMorse = new System.Windows.Forms.Label();
+            this.txtOutput = new System.Windows.Forms.TextBox();
+            this.labelMapping = new System.Windows.Forms.Label();
+            this.lstMapping = new System.Windows.Forms.ListBox();
+            this.btnConvert = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // labelInput
+            // 
+            this.labelInput.AutoSize = true;
+            this.labelInput.Font = new System.Drawing.Font("微軟正黑體", 14F);
+            this.labelInput.Location = new System.Drawing.Point(24, 20);
+            this.labelInput.Name = "labelInput";
+            this.labelInput.Size = new System.Drawing.Size(183, 35);
+            this.labelInput.TabIndex = 0;
+            this.labelInput.Text = "請輸入字串：";
+            // 
+            // txtInput
+            // 
+            this.txtInput.Font = new System.Drawing.Font("微軟正黑體", 11F);
+            this.txtInput.Location = new System.Drawing.Point(28, 58);
+            this.txtInput.Multiline = true;
+            this.txtInput.Name = "txtInput";
+            this.txtInput.Size = new System.Drawing.Size(880, 240);
+            this.txtInput.TabIndex = 2;
+            // 
+            // labelFullMorse
+            // 
+            this.labelFullMorse.AutoSize = true;
+            this.labelFullMorse.Font = new System.Drawing.Font("微軟正黑體", 14F);
+            this.labelFullMorse.Location = new System.Drawing.Point(24, 320);
+            this.labelFullMorse.Name = "labelFullMorse";
+            this.labelFullMorse.Size = new System.Drawing.Size(211, 35);
+            this.labelFullMorse.TabIndex = 3;
+            this.labelFullMorse.Text = "完整摩斯密碼：";
+            // 
+            // txtOutput
+            // 
+            this.txtOutput.Font = new System.Drawing.Font("微軟正黑體", 11F);
+            this.txtOutput.Location = new System.Drawing.Point(28, 358);
+            this.txtOutput.Multiline = true;
+            this.txtOutput.Name = "txtOutput";
+            this.txtOutput.ReadOnly = true;
+            this.txtOutput.Size = new System.Drawing.Size(880, 120);
+            this.txtOutput.TabIndex = 4;
+            // 
+            // labelMapping
+            // 
+            this.labelMapping.AutoSize = true;
+            this.labelMapping.Font = new System.Drawing.Font("微軟正黑體", 14F);
+            this.labelMapping.Location = new System.Drawing.Point(24, 523);
+            this.labelMapping.Name = "labelMapping";
+            this.labelMapping.Size = new System.Drawing.Size(155, 35);
+            this.labelMapping.TabIndex = 9;
+            this.labelMapping.Text = "逐字對照：";
+            // 
+            // lstMapping
+            // 
+            this.lstMapping.Font = new System.Drawing.Font("微軟正黑體", 11F);
+            this.lstMapping.ItemHeight = 28;
+            this.lstMapping.Location = new System.Drawing.Point(28, 561);
+            this.lstMapping.Name = "lstMapping";
+            this.lstMapping.Size = new System.Drawing.Size(880, 284);
+            this.lstMapping.TabIndex = 10;
+            // 
+            // btnConvert
+            // 
+            this.btnConvert.Font = new System.Drawing.Font("微軟正黑體", 14F);
+            this.btnConvert.Location = new System.Drawing.Point(199, 913);
+            this.btnConvert.Name = "btnConvert";
+            this.btnConvert.Size = new System.Drawing.Size(200, 50);
+            this.btnConvert.TabIndex = 11;
+            this.btnConvert.Text = "轉換";
+            this.btnConvert.UseVisualStyleBackColor = true;
+            this.btnConvert.Click += new System.EventHandler(this.btnConvert_Click);
+            // 
+            // btnClear
+            // 
+            this.btnClear.Font = new System.Drawing.Font("微軟正黑體", 14F);
+            this.btnClear.Location = new System.Drawing.Point(523, 913);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(200, 50);
+            this.btnClear.TabIndex = 12;
+            this.btnClear.Text = "清除";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+            // 
+            // Form1
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(985, 1268);
+            this.Controls.Add(this.btnClear);
+            this.Controls.Add(this.btnConvert);
+            this.Controls.Add(this.lstMapping);
+            this.Controls.Add(this.labelMapping);
+            this.Controls.Add(this.txtOutput);
+            this.Controls.Add(this.labelFullMorse);
+            this.Controls.Add(this.txtInput);
+            this.Controls.Add(this.labelInput);
+            this.Name = "Form1";
+            this.Text = "摩斯密碼轉換器";
+            this.ResumeLayout(false);
+            this.PerformLayout();
+
+        }
+
+        #endregion
+
+        // note: control fields declared at top
+    }
+}
+

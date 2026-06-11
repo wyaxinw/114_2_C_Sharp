@@ -1,0 +1,276 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.IO;
+using System.Text.RegularExpressions;
+
+namespace 摩斯密碼轉換器
+{
+    public partial class Form1 : Form
+    {
+
+        /// <summary>
+        /// 表示單筆摩斯碼資料的結構
+        /// Character: 字元
+        /// Code: 對應的摩斯密碼字串
+        /// </summary>
+        private struct MorseEntry
+        {
+            public char Character;
+            public string Code;
+
+            public MorseEntry(char character, string code)
+            {
+                Character = character;
+                Code = code;
+            }
+        }
+
+        /// <summary>
+        /// 根據解析得到的 key 與 val，建立 MorseEntry 並加入表中
+        /// 支援關鍵字如 space、comma、period、question 等特殊名稱
+        /// </summary>
+        private void AddEntryFromTokens(string key, string val)
+        {
+            try
+            {
+                char mapChar;
+                var kk = key.Trim();
+                if (string.Equals(kk, "space", StringComparison.OrdinalIgnoreCase) || kk == "*space*" || kk == " ")
+                {
+                    mapChar = ' ';
+                }
+                else if (string.Equals(kk, "comma", StringComparison.OrdinalIgnoreCase)) mapChar = ',';
+                else if (string.Equals(kk, "period", StringComparison.OrdinalIgnoreCase) || string.Equals(kk, "dot", StringComparison.OrdinalIgnoreCase)) mapChar = '.';
+                else if (string.Equals(kk, "question", StringComparison.OrdinalIgnoreCase) || kk == "?") mapChar = '?';
+                else if (kk.Length >= 1) mapChar = kk.ToUpperInvariant()[0];
+                else return;
+
+                var code = val.Trim().Replace("`", "").Trim();
+                code = code.Replace("–", "-").Replace("—", "-");
+
+                if (!_morseTable.Any(x => x.Character == mapChar)) _morseTable.Add(new MorseEntry(mapChar, code));
+            }
+            catch { }
+        }
+
+        private readonly List<MorseEntry> _morseTable;
+
+        public Form1()
+        {
+            InitializeComponent();
+            // initialize table and load morse table from external file
+            _morseTable = new List<MorseEntry>();
+            LoadMorseTable();
+        }
+
+        /// <summary>
+        /// 從外部檔案載入摩斯碼表
+        /// 使用 File.OpenText 與 StreamReader 逐行讀取，並以 !inputFile.EndOfStream 判斷結束
+        /// 支援 Markdown 表格格式或 key:value 或空白分隔的簡單格式
+        /// </summary>
+        private void LoadMorseTable()
+        {
+            try
+            {
+                // 在執行檔目錄尋找 morse_code_table.md
+                var appDir = AppDomain.CurrentDomain.BaseDirectory;
+                var path = Path.Combine(appDir, "morse_code_table.md");
+                // 若使用者提供特定下載路徑，先嘗試該路徑（使用者要求）
+                var specific = @"C:\Users\m303\Downloads\morse_code_table (1).md";
+                if (File.Exists(specific)) path = specific;
+                if (!File.Exists(path))
+                {
+                    // 若找不到則嘗試目前工作目錄
+                    path = Path.Combine(Directory.GetCurrentDirectory(), "morse_code_table.md");
+                }
+
+                if (!File.Exists(path))
+                {
+                    MessageBox.Show($"找不到 morse_code_table.md 檔案，請放置於程式目錄。\n預設將不會載入對照表。\n嘗試的路徑：{appDir}", "檔案遺失", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                // 使用 File.OpenText 開啟檔案並以 StreamReader 讀取
+                using (StreamReader inputFile = File.OpenText(path))
+                {
+                    while (!inputFile.EndOfStream)
+                    {
+                        var line = inputFile.ReadLine();
+                        if (string.IsNullOrWhiteSpace(line)) continue;
+                        var s = line.Trim();
+                        // 跳過 Markdown 標題或分隔線
+                        if (s.StartsWith("#")) continue; // 跳過 markdown 標題
+                        if (s.StartsWith("---")) continue; // 跳過分隔線
+
+                        string key = null;
+                        string val = null;
+
+                        if (s.Contains("|"))
+                        {
+                            // Markdown 表格列，可能包含多組配對，如: | A | .- | B | -... |
+                            var parts = s.Split('|').Select(p => p.Trim()).Where(p => !string.IsNullOrEmpty(p)).ToArray();
+                            if (parts.Length >= 2)
+                            {
+                                // 先以第一組為預設，實際會在下方逐對處理
+                                key = parts[0];
+                                val = parts[1];
+                            }
+                        }
+                        else if (s.Contains(":"))
+                        {
+                            // 支援 key:value 格式
+                            var idx = s.IndexOf(":");
+                            key = s.Substring(0, idx).Trim();
+                            val = s.Substring(idx + 1).Trim();
+                        }
+                        else
+                        {
+                            // 退而求其次，使用空白分隔取前兩欄
+                            var toks = Regex.Split(s, "\\s+").Where(t => !string.IsNullOrWhiteSpace(t)).ToArray();
+                            if (toks.Length >= 2)
+                            {
+                                key = toks[0];
+                                val = toks[1];
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(val)) continue;
+
+                        // 清除多餘的引號或反引號
+                        key = key.Trim().Trim('`', '\'', '"');
+                        val = val.Trim().Trim('`', '\'', '"');
+
+                        // 若為表格列，則逐對處理每組 pair
+                        if (s.Contains("|"))
+                        {
+                            var parts = s.Split('|').Select(p => p.Trim()).Where(p => !string.IsNullOrEmpty(p)).ToArray();
+                            for (int i = 0; i + 1 < parts.Length; i += 2)
+                            {
+                                var k = parts[i].Trim().Trim('`', '\'', '"');
+                                var v = parts[i + 1].Trim().Trim('`', '\'', '"');
+                                if (string.IsNullOrEmpty(k) || string.IsNullOrEmpty(v)) continue;
+                                if (string.Equals(k, "Character", StringComparison.OrdinalIgnoreCase) && string.Equals(v, "Code", StringComparison.OrdinalIgnoreCase)) continue;
+                                AddEntryFromTokens(k, v);
+                            }
+                        }
+                        else
+                        {
+                            // 正常處理 key/value
+                            val = val.Replace("–", "-").Replace("—", "-").Trim();
+                            AddEntryFromTokens(key, val);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("載入 morse_code_table.md 時發生錯誤: " + ex.Message, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private string ToMorse(string text)
+        {
+            // 若輸入為空，直接回傳空字串
+            if (string.IsNullOrEmpty(text)) return string.Empty;
+            var sb = new StringBuilder();
+            // 逐字轉換：將字元轉為大寫後在表中搜尋對應摩斯碼
+            foreach (char ch in text.ToUpperInvariant())
+            {
+                var entry = _morseTable.FirstOrDefault(x => x.Character == ch);
+                if (entry.Code != null)
+                {
+                    if (sb.Length > 0) sb.Append(' '); // 字元間以空白分隔
+                    sb.Append(entry.Code);
+                }
+                else
+                {
+                    // 若找不到對應，顯示問號表示未知
+                    if (sb.Length > 0) sb.Append(' ');
+                    sb.Append('?');
+                }
+            }
+            return sb.ToString();
+        }
+
+        private string FromMorse(string morse)
+        {
+            // 將摩斯字串轉回文字（非題目主要需求，但保留供後續擴充）
+            if (string.IsNullOrWhiteSpace(morse)) return string.Empty;
+            var parts = morse.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var sb = new StringBuilder();
+            foreach (var part in parts)
+            {
+                if (part == "/")
+                {
+                    sb.Append(' '); // 將 '/' 轉回空白
+                    continue;
+                }
+                var entry = _morseTable.FirstOrDefault(x => x.Code == part);
+                if (entry.Code != null) sb.Append(entry.Character);
+                else sb.Append('?'); // 未知摩斯碼以 ? 表示
+            }
+            return sb.ToString();
+        }
+
+        /// <summary>
+        /// 轉換按鈕事件：執行輸入文字到摩斯的轉換，並顯示逐字對照於 ListBox
+        /// </summary>
+        private void btnConvert_Click(object sender, EventArgs e)
+        {
+            var input = txtInput.Text ?? string.Empty;
+            // 顯示完整摩斯密碼（字元間以空白分隔，單字間空白轉為 /）
+            txtOutput.Text = ToMorse(input);
+            // 顯示逐字對照於 ListBox（以執行時查找元件名稱，避免 Designer 欄位不同步問題）
+            var lb = GetMappingBox();
+            if (lb != null)
+            {
+                lb.Items.Clear();
+                foreach (char ch in input)
+                {
+                    var up = char.ToUpperInvariant(ch);
+                    var entry = _morseTable.FirstOrDefault(x => x.Character == up);
+                    if (entry.Code != null) lb.Items.Add($"{ch}  {entry.Code}");
+                    else if (ch == ' ') lb.Items.Add("(space)  /");
+                    else lb.Items.Add($"{ch}  ?");
+                }
+            }
+        }
+
+        // Morse -> text conversion not required by spec; omitted.
+
+        /// <summary>
+        /// 清除按鈕事件：清空輸入、完整摩斯輸出與逐字對照
+        /// </summary>
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            txtInput.Clear();
+            txtOutput.Clear();
+            var lb = GetMappingBox();
+            if (lb != null) lb.Items.Clear();
+        }
+
+        /// <summary>
+        /// 取得逐字對照的 ListBox（透過名稱搜尋）
+        /// </summary>
+        private ListBox GetMappingBox()
+        {
+            var arr = this.Controls.Find("lstMapping", true);
+            if (arr.Length > 0 && arr[0] is ListBox) return (ListBox)arr[0];
+            return null;
+        }
+
+        // copy button removed from UI
+
+        private void labelInput_Click(object sender, EventArgs e)
+        {
+
+        }
+    }
+}

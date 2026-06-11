@@ -1,0 +1,150 @@
+﻿namespace 摩斯密碼轉換器
+{
+    partial class Form1
+    {
+        /// <summary>
+        /// 設計工具所需的變數。
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+        private System.Windows.Forms.Label labelInput;
+        private System.Windows.Forms.TextBox txtInput;
+        private System.Windows.Forms.Label labelOutput;
+        private System.Windows.Forms.TextBox txtOutput;
+        private System.Windows.Forms.Button btnToMorse;
+        private System.Windows.Forms.Button btnToText;
+        private System.Windows.Forms.Button btnClear;
+        private System.Windows.Forms.Button btnCopy;
+
+        /// <summary>
+        /// 清除任何使用中的資源。
+        /// </summary>
+        /// <param name="disposing">如果應該處置受控資源則為 true，否則為 false。</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows Form 設計工具產生的程式碼
+
+        /// <summary>
+        /// 此為設計工具支援所需的方法 - 請勿使用程式碼編輯器修改
+        /// 這個方法的內容。
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.components = new System.ComponentModel.Container();
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Text = "摩斯密碼轉換器";
+
+            this.labelInput = new System.Windows.Forms.Label();
+            this.txtInput = new System.Windows.Forms.TextBox();
+            this.labelOutput = new System.Windows.Forms.Label();
+            this.txtOutput = new System.Windows.Forms.TextBox();
+            this.btnToMorse = new System.Windows.Forms.Button();
+            this.btnToText = new System.Windows.Forms.Button();
+            this.btnClear = new System.Windows.Forms.Button();
+            this.btnCopy = new System.Windows.Forms.Button();
+
+            // 
+            // labelInput
+            // 
+            this.labelInput.AutoSize = true;
+            this.labelInput.Location = new System.Drawing.Point(12, 15);
+            this.labelInput.Name = "labelInput";
+            this.labelInput.Size = new System.Drawing.Size(53, 12);
+            this.labelInput.TabIndex = 0;
+            this.labelInput.Text = "原始文字";
+
+            // 
+            // txtInput
+            // 
+            this.txtInput.Location = new System.Drawing.Point(15, 35);
+            this.txtInput.Multiline = true;
+            this.txtInput.Name = "txtInput";
+            this.txtInput.Size = new System.Drawing.Size(560, 150);
+            this.txtInput.TabIndex = 1;
+
+            // 
+            // labelOutput
+            // 
+            this.labelOutput.AutoSize = true;
+            this.labelOutput.Location = new System.Drawing.Point(12, 200);
+            this.labelOutput.Name = "labelOutput";
+            this.labelOutput.Size = new System.Drawing.Size(65, 12);
+            this.labelOutput.TabIndex = 2;
+            this.labelOutput.Text = "摩斯密碼/文字";
+
+            // 
+            // txtOutput
+            // 
+            this.txtOutput.Location = new System.Drawing.Point(15, 220);
+            this.txtOutput.Multiline = true;
+            this.txtOutput.Name = "txtOutput";
+            this.txtOutput.ReadOnly = false;
+            this.txtOutput.Size = new System.Drawing.Size(560, 150);
+            this.txtOutput.TabIndex = 3;
+
+            // 
+            // btnToMorse
+            // 
+            this.btnToMorse.Location = new System.Drawing.Point(590, 35);
+            this.btnToMorse.Name = "btnToMorse";
+            this.btnToMorse.Size = new System.Drawing.Size(180, 40);
+            this.btnToMorse.TabIndex = 4;
+            this.btnToMorse.Text = "文字 → 摩斯";
+            this.btnToMorse.UseVisualStyleBackColor = true;
+            this.btnToMorse.Click += new System.EventHandler(this.btnToMorse_Click);
+
+            // 
+            // btnToText
+            // 
+            this.btnToText.Location = new System.Drawing.Point(590, 85);
+            this.btnToText.Name = "btnToText";
+            this.btnToText.Size = new System.Drawing.Size(180, 40);
+            this.btnToText.TabIndex = 5;
+            this.btnToText.Text = "摩斯 → 文字";
+            this.btnToText.UseVisualStyleBackColor = true;
+            this.btnToText.Click += new System.EventHandler(this.btnToText_Click);
+
+            // 
+            // btnClear
+            // 
+            this.btnClear.Location = new System.Drawing.Point(590, 135);
+            this.btnClear.Name = "btnClear";
+            this.btnClear.Size = new System.Drawing.Size(180, 40);
+            this.btnClear.TabIndex = 6;
+            this.btnClear.Text = "清除";
+            this.btnClear.UseVisualStyleBackColor = true;
+            this.btnClear.Click += new System.EventHandler(this.btnClear_Click);
+
+            // 
+            // btnCopy
+            // 
+            this.btnCopy.Location = new System.Drawing.Point(590, 185);
+            this.btnCopy.Name = "btnCopy";
+            this.btnCopy.Size = new System.Drawing.Size(180, 40);
+            this.btnCopy.TabIndex = 7;
+            this.btnCopy.Text = "複製輸出";
+            this.btnCopy.UseVisualStyleBackColor = true;
+            this.btnCopy.Click += new System.EventHandler(this.btnCopy_Click);
+
+            // add controls
+            this.Controls.Add(this.labelInput);
+            this.Controls.Add(this.txtInput);
+            this.Controls.Add(this.labelOutput);
+            this.Controls.Add(this.txtOutput);
+            this.Controls.Add(this.btnToMorse);
+            this.Controls.Add(this.btnToText);
+            this.Controls.Add(this.btnClear);
+            this.Controls.Add(this.btnCopy);
+        }
+
+        #endregion
+    }
+}
+

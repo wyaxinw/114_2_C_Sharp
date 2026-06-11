@@ -1,0 +1,211 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.IO;
+using System.Text.RegularExpressions;
+
+namespace 摩斯密碼轉換器
+{
+    public partial class Form1 : Form
+    {
+
+        private struct MorseEntry
+        {
+            public char Character;
+            public string Code;
+
+            public MorseEntry(char character, string code)
+            {
+                Character = character;
+                Code = code;
+            }
+        }
+
+        private readonly List<MorseEntry> _morseTable;
+
+        public Form1()
+        {
+            InitializeComponent();
+            // initialize table and load morse table from external file
+            _morseTable = new List<MorseEntry>();
+            LoadMorseTable();
+        }
+
+        private void LoadMorseTable()
+        {
+            try
+            {
+                // look for morse_code_table.md in executable directory
+                var appDir = AppDomain.CurrentDomain.BaseDirectory;
+                var path = Path.Combine(appDir, "morse_code_table.md");
+                if (!File.Exists(path))
+                {
+                    // try project directory
+                    path = Path.Combine(Directory.GetCurrentDirectory(), "morse_code_table.md");
+                }
+
+                if (!File.Exists(path))
+                {
+                    MessageBox.Show($"找不到 morse_code_table.md 檔案，請放置於程式目錄。\n預設將不會載入對照表。\n嘗試的路徑：{appDir}", "檔案遺失", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+
+                using (StreamReader inputFile = File.OpenText(path))
+                {
+                    while (!inputFile.EndOfStream)
+                    {
+                        var line = inputFile.ReadLine();
+                        if (string.IsNullOrWhiteSpace(line)) continue;
+                        var s = line.Trim();
+                        if (s.StartsWith("#")) continue; // skip markdown headings
+                        if (s.StartsWith("---")) continue;
+
+                        string key = null;
+                        string val = null;
+
+                        if (s.Contains("|"))
+                        {
+                            // markdown table row: | A | .- |
+                            var parts = s.Split('|').Select(p => p.Trim()).Where(p => !string.IsNullOrEmpty(p)).ToArray();
+                            if (parts.Length >= 2)
+                            {
+                                key = parts[0];
+                                val = parts[1];
+                            }
+                        }
+                        else if (s.Contains(":"))
+                        {
+                            var idx = s.IndexOf(":");
+                            key = s.Substring(0, idx).Trim();
+                            val = s.Substring(idx + 1).Trim();
+                        }
+                        else
+                        {
+                            // fallback split by whitespace
+                            var toks = Regex.Split(s, "\\s+").Where(t => !string.IsNullOrWhiteSpace(t)).ToArray();
+                            if (toks.Length >= 2)
+                            {
+                                key = toks[0];
+                                val = toks[1];
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(key) || string.IsNullOrEmpty(val)) continue;
+
+                        // clean tokens
+                        key = key.Trim().Trim('`', '\'', '"');
+                        val = val.Trim().Trim('`', '\'', '"');
+
+                        char mapChar;
+                        if (string.Equals(key, "space", StringComparison.OrdinalIgnoreCase) || key == " ")
+                        {
+                            mapChar = ' ';
+                        }
+                        else
+                        {
+                            // take first char
+                            mapChar = key.ToUpperInvariant()[0];
+                        }
+
+                        // normalize morse value (ensure only dots/dashes/slash)
+                        val = val.Replace("–", "-").Replace("—", "-").Trim();
+
+                        if (!_charToMorse.ContainsKey(mapChar)) _charToMorse[mapChar] = val;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("載入 morse_code_table.md 時發生錯誤: " + ex.Message, "錯誤", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private string ToMorse(string text)
+        {
+            if (string.IsNullOrEmpty(text)) return string.Empty;
+            var sb = new StringBuilder();
+            foreach (char ch in text.ToUpperInvariant())
+            {
+                if (_charToMorse.TryGetValue(ch, out var morse))
+                {
+                    if (sb.Length > 0) sb.Append(' ');
+                    sb.Append(morse);
+                }
+                else
+                {
+                    // unknown -> skip
+                    if (sb.Length > 0) sb.Append(' ');
+                    sb.Append('?');
+                }
+            }
+            return sb.ToString();
+        }
+
+        private string FromMorse(string morse)
+        {
+            if (string.IsNullOrWhiteSpace(morse)) return string.Empty;
+            var parts = morse.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var sb = new StringBuilder();
+            foreach (var part in parts)
+            {
+                if (part == "/")
+                {
+                    sb.Append(' ');
+                    continue;
+                }
+                if (_morseToChar.TryGetValue(part, out var ch)) sb.Append(ch);
+                else sb.Append('?');
+            }
+            return sb.ToString();
+        }
+
+        private void btnToMorse_Click(object sender, EventArgs e)
+        {
+            var input = txtInput.Text ?? string.Empty;
+            txtOutput.Text = ToMorse(input);
+
+            var sb = new StringBuilder();
+            foreach (char ch in input)
+            {
+                var up = char.ToUpperInvariant(ch);
+                if (_charToMorse.TryGetValue(up, out var m)) sb.AppendLine($"{ch} => {m}");
+                else if (ch == ' ') sb.AppendLine($"(space) => /");
+                else sb.AppendLine($"{ch} => ?");
+            }
+            txtMapping.Text = sb.ToString();
+        }
+
+        private void btnToText_Click(object sender, EventArgs e)
+        {
+            var input = txtInput.Text ?? string.Empty;
+            txtOutput.Text = FromMorse(input);
+
+            var parts = input.Trim().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+            var sb = new StringBuilder();
+            foreach (var part in parts)
+            {
+                if (part == "/") sb.AppendLine($"/ => (space)");
+                else if (_morseToChar.TryGetValue(part, out var ch)) sb.AppendLine($"{part} => {ch}");
+                else sb.AppendLine($"{part} => ?");
+            }
+            txtMapping.Text = sb.ToString();
+        }
+
+        private void btnClear_Click(object sender, EventArgs e)
+        {
+            txtInput.Clear();
+            txtOutput.Clear();
+        }
+
+        private void btnCopy_Click(object sender, EventArgs e)
+        {
+            if (!string.IsNullOrEmpty(txtOutput.Text)) Clipboard.SetText(txtOutput.Text);
+        }
+    }
+}
